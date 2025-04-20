@@ -1,0 +1,32 @@
+<!-- temporizador/templates/temporizador/timer.html -->
+{% load static %} <!-- Necesario para cargar archivos estáticos -->
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temporizador Pomodoro</title>
+    <link rel="stylesheet" href="{% static 'temporizador/css/timer.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="navar">Barra de navegacion</div>
+    <div class="timer-container">
+        <div class="titulo">Pomodoro</div>
+        <div class="timer" id="timer">01:00</div>
+        <div class="contenedorBoton">
+            <button id="startBtn" class="boton-pomodoro">Iniciar</button>
+        </div>
+
+    </div>
+
+    <div class="calendario">calendario</div>
+    <div class="tareas"> Tareas</div>
+    <div class="musica"> Musica</div>
+    <script src="{% static 'temporizador/js/timer.js' %}"></script>
+</body>
+
+</html>

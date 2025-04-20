@@ -17,8 +17,10 @@ Including another URLconf
 from principal import views 
 from registro import views 
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
+from django.urls import include
 
 urlpatterns = [   
     path('admin/', admin.site.urls),
+    path('temporizador/', include('temporizador.urls')),
 ]

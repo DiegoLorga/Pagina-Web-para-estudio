@@ -1,0 +1,116 @@
+
+body {
+    margin: 0;  /* Elimina márgenes predeterminados */
+    padding: 0;
+    font-family: 'Poppins', sans-serif; /* Aplica la fuente globalmente */
+}
+.navar {
+    width: 1728px;
+    height: 129px;
+    flex-shrink: 0;
+    background: #F2E9E1;
+}
+
+.timer-container {
+    margin-left: 128px;
+    margin-top: 50px;
+    width: 600px;
+    height: 440px;
+    border-radius: 50px;
+    background: #F2E9E1;
+    padding: 30px 0 0 54px; /* Arriba | Derecha | Abajo | Izquierda */
+    box-sizing: border-box; /* Incluye padding en el ancho/alto total */
+}
+
+/* Estilos para el texto del título */
+.titulo {
+    color: #1C140D;
+    font-family: 'Poppins', sans-serif;
+   margin: 0;
+   font-size: 40px;
+}
+.timer{
+    color: #1C140D;
+font-family: Inter;
+font-size: 128px;
+font-style: normal;
+font-weight: 700;
+line-height: normal;
+margin-top: 16px;
+margin-left: 108px;
+}
+
+/* Estilos del contenedor (los que ya tenías) */
+.contenedorBoton {
+    margin-top: 48px;
+    margin-left: 125px;
+    width: 250px;
+    height: 90px;
+    flex-shrink: 0;
+    border-radius: 50px;
+    background: #A8C252; /* Color de fondo del contenedor */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Opcional: sombra */
+}
+
+/* Estilos específicos del botón */
+.boton-pomodoro {
+    width: 100%; /* Ocupa todo el ancho del contenedor */
+    height: 100%; /* Ocupa toda la altura del contenedor */
+    border: none;
+    border-radius: 50px; /* Mismo radio que el contenedor */
+    background: transparent; /* Fondo transparente para que se vea el color del contenedor */
+    color: #1C140D; /* Color del texto */
+    font-family: "DM Sans";
+    font-size: 40px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease; /* Efecto suave al interactuar */
+}
+
+/* Efecto al pasar el mouse */
+.boton-pomodoro:hover {
+    background: rgba(255, 255, 255, 0.2); /* Ligero efecto de hover */
+}
+
+/* Efecto al hacer clic */
+.boton-pomodoro:active {
+    transform: scale(0.98); /* Pequeña reducción de tamaño */
+}
+
+
+/*////////////////////////////////////////////////////////*/
+
+.calendario{
+    margin-top: -450px ;
+    margin-left: 770px;
+    width: 600px;
+height: 547px;
+border-radius: 50px;
+background: #F2E9E1;
+padding: 30px 0 0 54px; /* Arriba | Derecha | Abajo | Izquierda */
+box-sizing: border-box; /* Incluye padding en el ancho/alto total */
+}
+.tareas{ 
+    margin-top: -45px;
+    margin-left: 128px ;
+    width: 600px;
+    height: 380px;
+    border-radius: 50px;
+    background: #F2E9E1;
+    padding: 30px 0 0 54px; /* Arriba | Derecha | Abajo | Izquierda */
+    box-sizing: border-box; /* Incluye padding en el ancho/alto total */
+}
+
+.musica{
+    margin-top: -290px;
+    margin-left: 770px;
+    width: 600px;
+    height: 273px;
+    border-radius: 50px;
+    background: #F2E9E1;
+    padding: 30px 0 0 54px; /* Arriba | Derecha | Abajo | Izquierda */
+    box-sizing: border-box; /* Incluye padding en el ancho/alto total */
+}
