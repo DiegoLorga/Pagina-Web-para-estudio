@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Procesar PDF</title>
+  <link rel="stylesheet" href="{% static 'llamaapp/style.css' %}">
+</head>
+<body>
+  <div class="container">
+    <h1>Sube tu PDF</h1>
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <input type="file" name="archivo" accept=".pdf" required><br><br>
+      <label>¿Qué deseas hacer?</label><br>
+      <input type="radio" name="accion" value="resumen" checked> Resumen <br>
+      <input type="radio" name="accion" value="cuestionario"> Cuestionario <br><br>
+      <button type="submit">Procesar</button>
+    </form>
+
+    {% if resultado %}
+    <h2>Resultado:</h2>
+    <div class="resultado-caja">
+      {{ resultado }}
+    </div>
+    {% endif %}
+  </div>
+</body>
+</html>
