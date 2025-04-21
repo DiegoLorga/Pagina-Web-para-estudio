@@ -1,0 +1,92 @@
+/* agenda.css */
+
+.btn-calendario {
+    background-color: #28a745;           /* Verde personalizado */
+    color: white;
+    font-size: 1.3rem;
+    padding: 20px 30px;
+    border-radius: 15px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .btn-calendario:hover {
+    transform: scale(1.08);              /* Aumenta ligeramente el tamaño */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25); /* Sombra elegante */
+  }
+  
+  .btn-calendario i {
+    font-size: 2rem;
+  }
+
+  .btn-agregar {
+    font-size: 1.2rem;
+    padding: 15px 25px;
+    border-radius: 12px;
+    transition: transform 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .btn-agregar:hover {
+    transform: scale(1.05);
+  }
+
+  /* Espaciado general del modal */
+.modal-body {
+    padding: 2rem;
+  }
+  
+  /* Ajusta el label de los checkboxes */
+  .form-check-label {
+    font-size: 1.1rem;
+  }
+  
+  /* Opcional: fondo tenue para el modal */
+  .modal-content {
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Estilo al botón de guardar */
+  .modal-footer .btn-primary {
+    padding: 10px 30px;
+    font-size: 1.1rem;
+    border-radius: 12px;
+  }
+  
+/* Botones del calendario */
+.fc .fc-button-primary {
+    background-color: #198754;
+    border-color: #198754;
+    color: #fff;
+  }
+  
+  .fc .fc-button-primary:hover,
+  .fc .fc-button-primary:focus {
+    background-color: #157347;
+    border-color: #157347;
+    color: #fff;
+  }
+  
+  /* Eventos del calendario */
+  .fc .fc-event {
+    background-color: #198754 !important;
+    border-color: #157347 !important;
+    color: white !important;
+  }
+  
+  /* Texto azul de los días (domingo, lunes, etc.) */
+  .fc .fc-col-header-cell-cushion {
+    color: #198754;
+    font-weight: bold;
+  }
+  
+  /* Día actual (hoy) */
+  .fc .fc-day-today {
+    background-color: #d4edda !important; /* Verde claro */
+  }
+  
