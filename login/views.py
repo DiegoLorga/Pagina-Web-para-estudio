@@ -1,3 +1,51 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import check_password
+from .models import Estudiante
 
-# Create your views here.
+def login_view(request):
+    return render(request, 'login.html')
+
+
+def registro_estudiante(request):
+    context = {}
+
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre')
+        correo = request.POST.get('correo')
+        password = request.POST.get('password')
+
+        if nombre and correo and password:
+            if Estudiante.objects.filter(correo=correo).exists():
+                context['error'] = "Este correo ya está registrado."
+            else:
+                Estudiante.objects.create(
+                    nombre=nombre,
+                    correo=correo,
+                    password=make_password(password),
+                    rachaDias=0
+                )
+                context['exito'] = "Registro exitoso. ¡Ahora puedes iniciar sesión!"
+
+    return render(request, 'login.html', context)
+
+def login_estudiante(request):
+    context = {}
+
+    if request.method == 'POST':
+        correo = request.POST.get('correo')
+        password = request.POST.get('password')
+
+        try:
+            estudiante = Estudiante.objects.get(correo=correo)
+            if check_password(password, estudiante.password):
+                context['exito_login'] = f"Bienvenido {estudiante.nombre}"
+                # Aquí puedes usar sesiones o redirigir a otra vista
+                # request.session['usuario_id'] = estudiante.id
+                # return redirect('dashboard')
+            else:
+                context['error_login'] = "Contraseña incorrecta."
+        except Estudiante.DoesNotExist:
+            context['error_login'] = "Este usuario no tiene una cuenta registrada."
+
+    return render(request, 'login.html', context)

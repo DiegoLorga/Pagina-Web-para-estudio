@@ -16,10 +16,12 @@ Including another URLconf
 """
 from principal import views 
 from registro import views 
+from login import views
 from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('eventosAgenda.urls')),
+    path('',include('login.urls'))
 ]
