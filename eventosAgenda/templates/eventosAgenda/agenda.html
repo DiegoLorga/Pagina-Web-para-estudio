@@ -2,6 +2,11 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <script>
+    const usuarioId = "{{ usuario_id }}"; // 🔥 Pasamos la variable de Django a JavaScript
+    console.log("usuarioId cargado en HTML:", usuarioId); 
+  </script>
+  
   <meta charset="UTF-8">
   <title>Agenda</title>
 <!-- SweetAlert2 CSS & JS -->
@@ -55,13 +60,6 @@
 
               <div class="col-md-6">
                 <div class="form-floating">
-                  <input type="text" class="form-control" id="usuarioid" name="usuarioid" placeholder="Usuarioid">
-                  <label for="usuarioid">Usuario ID</label>
-                </div>
-              </div>
-
-              <div class="col-md-6">
-                <div class="form-floating">
                   <input type="text" class="form-control" id="titulo" name="titulo" placeholder="Título">
                   <label for="titulo">Título</label>
                 </div>
@@ -106,6 +104,8 @@
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
   <!-- Tu JS -->
   <script src="{% static 'eventosAgenda/js/agenda.js' %}"></script>
-
+  
+  
+  
 </body>
 </html>
