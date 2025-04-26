@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'login',
     'llamaapp',
     'eventosAgenda',
-    'tareas'
+    'tareas',
+    'temporizador'
 ]
 
 MIDDLEWARE = [
