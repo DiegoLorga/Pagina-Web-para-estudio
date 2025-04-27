@@ -39,6 +39,7 @@ def login_estudiante(request):
         try:
             estudiante = Estudiante.objects.get(correo=correo)
             if check_password(password, estudiante.password):
+                request.session['usuario_id'] = estudiante.id 
                 context['exito_login'] = f"Bienvenido {estudiante.nombre}"
                 # Aquí puedes usar sesiones o redirigir a otra vista
                 # request.session['usuario_id'] = estudiante.id

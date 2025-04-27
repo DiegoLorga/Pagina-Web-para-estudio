@@ -74,14 +74,16 @@ document.addEventListener('DOMContentLoaded', function () {
   // Manejo del formulario de evento
   document.getElementById('eventoForm').addEventListener('submit', function (e) {
     e.preventDefault();
+    console.log("usuarioId en JS antes de enviar:", usuarioId);  // 👀 AQUI
 
     const datos = {
-      usuarioid: document.getElementById('usuarioid').value,
+      usuarioid: usuarioId, // ya viene del backend
       titulo: document.getElementById('titulo').value,
       descripcion: document.getElementById('descripcion').value,
       fecha_evento: document.getElementById('fecha_evento').value,
       importante: document.getElementById('importante').checked
     };
+    
 
     console.log('Evento enviado:', datos);
 
@@ -96,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function () {
 document.getElementById('eventoForm').addEventListener('submit', function (e) {
   e.preventDefault();
 
-  const usuarioid = document.getElementById('usuarioid').value.trim();
+  const usuarioid = usuarioId;  // 🔥 ya viene de Django, no necesitas pedirlo del input
   const titulo = document.getElementById('titulo').value.trim();
   const descripcion = document.getElementById('descripcion').value.trim();
   const fecha_evento = document.getElementById('fecha_evento').value;
