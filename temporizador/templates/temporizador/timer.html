@@ -9,6 +9,8 @@
     <title>Temporizador Pomodoro</title>
     <link rel="stylesheet" href="{% static 'temporizador/css/timer.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 </head>
 
 <body>
@@ -16,9 +18,19 @@
     <div class="navar">Barra de navegacion</div>
     <div class="timer-container">
         <div class="titulo">Pomodoro</div>
-        <div class="timer" id="timer">01:00</div>
+
+        <button class="boton-configuracion">
+            <i id="openModalBtn" class="fas fa-stopwatch"></i> 
+        </button>
+
+        <div class="timer" id="timer">0:25</div>
+        <div id="nextSession" ></div>
         <div class="contenedorBoton">
-            <button id="startBtn" class="boton-pomodoro">Iniciar</button>
+            <button id="startBtn" class="boton-pomodoro"><i class="fas fa-play"></i> <span></span></button>
+        </div>
+        <div class="">
+            <button id="resetBtn" class="boton-reinicio"> <i
+                    class="fas fa-rotate-left"></i> <span></span></button>
         </div>
 
     </div>
@@ -26,7 +38,31 @@
     <div class="calendario">calendario</div>
     <div class="tareas"> Tareas</div>
     <div class="musica"> Musica</div>
+
+
+
+    <div id="timeModal" class="modal">
+        <div class="modal-content">
+            <h2>Selecciona un tiempo</h2>
+            <label for="timeSelect"><strong>Duración total:</strong></label>
+            <select id="timeSelect">
+                <option value="1800">30 min </option>
+                <option value="3600">60 min</option>
+                <option value="5400">90 min </option>
+                <option value="7800">130 min</option>
+                <option value="9600">200 min</option>
+                <option value="11100">190 min</option>
+                <option value="13200">220 min</option>
+                <option value="14700">245 min</option>
+            </select>
+            <p id="breakCount" style="font-weight: bold; margin-top: 10px;"></p>
+            <br><br>
+            <button id="setTimeBtn">Establecer tiempo</button>
+        </div>
+    </div>
+
     <script src="{% static 'temporizador/js/timer.js' %}"></script>
+
 </body>
 
 </html>
