@@ -10,27 +10,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const nextSessionMsg = document.getElementById('nextSession');
     const sound = new Audio('/static/temporizador/sounds/notificacion.mp3');
 
-
     let fullPlan = [];
     let currentIndex = 0;
     let interval = null;
     let time = 1800; // 30 minutos en segundos
     let isPaused = false;
 
+    // Ocultar botón Reset al cargar
+    resetBtn.style.display = "none";
+
     // Establecer 30 min como predeterminado al cargar
     fullPlan = buildPomodoroPlan(1800);
     time = fullPlan.length > 0 ? fullPlan[0].duration : 1800;
     updateTimer();
-    //  Pide permiso para mostrar notificaciones
+
+    // Pide permiso para mostrar notificaciones
     if (Notification.permission !== "granted") {
         Notification.requestPermission();
     }
 
     function sendNotification(message) {
         if (Notification.permission === "granted") {
-            new Notification(message); 
+            new Notification(message);
             sound.play();
-            
         }
     }
 
@@ -42,19 +44,23 @@ document.addEventListener('DOMContentLoaded', () => {
         if (time <= 0) {
             clearInterval(interval);
             interval = null;
+
             const session = fullPlan[currentIndex];
-            // ⚡ Notificación al terminar la sesión actual
-            if (session && session.type === 'study') {
-                sendNotification("¡Pomodoro terminado! Hora de descansar.");
-            } else if (session && session.type === 'break') {
-                sendNotification("¡Descanso terminado! Hora de concentrarte.");
+            if (session) {
+                if (session.type === 'study') {
+                    sendNotification("¡Pomodoro terminado! Hora de descansar.");
+                } else if (session.type === 'break') {
+                    sendNotification("¡Descanso terminado! Hora de concentrarte.");
+                }
             }
+
             currentIndex++;
+
             if (currentIndex < fullPlan.length) {
                 startSession();
             } else {
                 timer.textContent = "¡Fin total!";
-                startBtn.innerHTML = '<i class="fas fa-play"></i> <span></span>';
+                startBtn.innerHTML = '<i class="fas fa-play"></i>';
                 nextSessionMsg.textContent = "";
                 resetBtn.style.display = "none";
             }
@@ -70,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         updateTimer();
         interval = setInterval(updateTimer, 1000);
-        startBtn.innerHTML = '<i class="fas fa-pause"></i> <span></span>';
+        startBtn.innerHTML = '<i class="fas fa-pause"></i>'; // Solo ícono
         isPaused = false;
 
         const next = fullPlan[currentIndex + 1];
@@ -86,18 +92,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function buildPomodoroPlan(totalTime) {
-        // const plan = [];
-        // const pomodoroDuration = 5 * 60;
-        // const shortBreak = 5 * 60;
-        // const longBreak = 15 * 60;   
-
-
+/*     function buildPomodoroPlan(totalTime) {
         const plan = [];
-        const pomodoroDuration = 25; 
-        const shortBreak = 5;        
-        const longBreak = 15;         
-        
+        const pomodoroDuration = 25 * 60; // 25 minutos reales
+        const shortBreak = 5 * 60;
+        const longBreak = 15 * 60;
 
         let remaining = totalTime;
         let count = 0;
@@ -116,14 +115,53 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        if (remaining > 0) {
+            plan.push({ type: 'study', duration: remaining });
+        }
+
         return plan;
     }
+ */
 
+    function buildPomodoroPlan(totalTime) {
+        const plan = [];
+        const pomodoroDuration = 25; //  25 segundos para pruebas
+        const shortBreak = 5;         //  5 segundos descanso corto
+        const longBreak = 15;         //  15 segundos descanso largo
+    
+        let remaining = totalTime;
+        let count = 0;
+    
+        while (remaining >= pomodoroDuration) {
+            plan.push({ type: 'study', duration: pomodoroDuration });
+            remaining -= pomodoroDuration;
+            count++;
+    
+            // Cada 4 Pomodoros, descanso largo
+            if (remaining >= longBreak && count % 4 === 0) {
+                plan.push({ type: 'break', duration: longBreak });
+                remaining -= longBreak;
+            }
+            // Si no, descansos cortos
+            else if (remaining >= shortBreak && remaining >= 5) {
+                plan.push({ type: 'break', duration: shortBreak });
+                remaining -= shortBreak;
+            }
+        }
+    
+        // Si sobra poquito, agregarlo como mini pomodoro
+        if (remaining > 0) {
+            plan.push({ type: 'study', duration: remaining });
+        }
+    
+        return plan;
+    }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////    
     startBtn.addEventListener('click', () => {
         if (!interval && fullPlan.length > 0) {
             if (isPaused) {
                 interval = setInterval(updateTimer, 1000);
-                startBtn.innerHTML = '<i class="fas fa-pause"></i> <span></span>';
+                startBtn.innerHTML = '<i class="fas fa-pause"></i>';
                 isPaused = false;
                 resetBtn.style.display = "none";
             } else {
@@ -132,9 +170,9 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (interval) {
             clearInterval(interval);
             interval = null;
-            startBtn.innerHTML = '<i class="fas fa-play"></i> <span></span>';
+            startBtn.innerHTML = '<i class="fas fa-play"></i>';
             isPaused = true;
-            resetBtn.style.display = "inline-block";
+            resetBtn.style.display = "inline-block"; // Mostrar Reset solo al pausar
         }
     });
 
@@ -146,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
         time = 1800; // Reiniciar a 30 minutos
         fullPlan = buildPomodoroPlan(1800);
         timer.textContent = "30:00";
-        startBtn.innerHTML = '<i class="fas fa-play"></i> <span></span>';
+        startBtn.innerHTML = '<i class="fas fa-play"></i>';
         nextSessionMsg.textContent = "";
         resetBtn.style.display = "none";
     });
@@ -193,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fullPlan = buildPomodoroPlan(selectedTime);
         time = fullPlan.length > 0 ? fullPlan[0].duration : selectedTime;
         updateTimer();
-        startBtn.innerHTML = '<i class="fas fa-play"></i> <span></span>';
+        startBtn.innerHTML = '<i class="fas fa-play"></i>';
         nextSessionMsg.textContent = "";
         resetBtn.style.display = "none";
         modal.style.display = 'none';
