@@ -43,7 +43,7 @@ def login_estudiante(request):
             estudiante = Estudiante.objects.get(correo=correo)
             if check_password(password, estudiante.password):
                 request.session['usuario_id'] = estudiante.id
-                return redirect('menu_principal')  # 🔥 Aquí debes tener tu vista de menú
+                return redirect('menu_principal')  #  vista de menú
             else:
                 context['error_login'] = "Contraseña incorrecta."
         except Estudiante.DoesNotExist:

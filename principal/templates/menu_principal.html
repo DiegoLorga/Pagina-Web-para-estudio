@@ -4,9 +4,10 @@
 
 <head>
     <script>
-        const usuarioId = "{{ usuario_id|default:'' }}"; 
+        const usuarioId = "{{ usuario_id|default:'' }}";
         console.log("usuarioId cargado en HTML:", usuarioId);
-      </script>
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Menú Principal</title>
@@ -64,7 +65,7 @@
             </div>
 
         </div>
-        
+
 
         <!-- Tarjeta Calendario -->
         <div class="calendario" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#calendarModal">
@@ -73,12 +74,24 @@
 
         <!-- Tarjeta Tareas -->
         <div class="tareas">
-            <h2>Tareas</h2>
+            <h2 class="titulo">Tareas</h2>
+            <div class="task-header">
+                <div class="date-inline">
+                    <span id="dateNumber"></span>
+                    <span id="dateMonth"></span>
+                    <span id="dateYear"></span>
+                    <span id="dateText"></span>
+                </div>
+            </div>
+            <form class="task-form" onsubmit="addNewTask(event)">
+                <input type="text" name="taskText" placeholder="Nueva tarea" autocomplete="off">
+                <button type="submit">+</button>
+            </form>
+            <div id="tasksContainer" class="tasks-list"></div>
         </div>
-
         <!-- Tarjeta Música -->
         <div class="musica">
-            <h2>Música</h2>
+            <div class="titulo">Música</div>
         </div>
 
     </div>
@@ -188,7 +201,7 @@
     <script src="{% static 'principal/js/agenda.js' %}"></script>
 
     <script src="{% static 'principal/js/timer.js' %}"></script>
-
+    <script src="{% static 'login/js/listaScript.js' %}"></script>
 </body>
 
 </html>
