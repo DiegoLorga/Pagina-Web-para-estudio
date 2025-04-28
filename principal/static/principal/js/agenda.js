@@ -1,4 +1,5 @@
 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
 function getCookie(name) {
   let cookieValue = null;
   if (document.cookie && document.cookie !== '') {
@@ -21,12 +22,18 @@ document.addEventListener('DOMContentLoaded', function () {
     const calendarEl = document.getElementById('calendar');
 
     calendar = new FullCalendar.Calendar(calendarEl, {
-      locale: 'es',
+      locale: 'es', // idioma español
       initialView: 'dayGridMonth',
       headerToolbar: {
         left: 'agregarEventoBtn prev,next today',
         center: 'title',
         right: 'dayGridMonth timeGridWeek timeGridDay'
+      },
+      buttonText: {  // traducir botones internos
+        today: 'Hoy',
+        month: 'Mes',
+        week: 'Semana',
+        day: 'Día'
       },
       customButtons: {
         agregarEventoBtn: {
@@ -45,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     calendar.render();
 
-    // 🔽 Cambiar estilo al botón "Agregar evento"
+    // 🔽 Mejorar estilo del botón "Agregar evento"
     const botonAgregar = document.querySelector('.fc-agregarEventoBtn-button');
     if (botonAgregar) {
       botonAgregar.classList.remove('fc-button', 'fc-button-primary');
@@ -64,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   };
 
-  // Renderizar calendario cuando se abre el modal
+  // Renderizar calendario solo cuando se abre el modal
   const calendarModal = document.getElementById('calendarModal');
   calendarModal.addEventListener('shown.bs.modal', function () {
     if (!calendar) {
@@ -75,100 +82,76 @@ document.addEventListener('DOMContentLoaded', function () {
   // Manejo del formulario de evento
   document.getElementById('eventoForm').addEventListener('submit', function (e) {
     e.preventDefault();
-    console.log("usuarioId en JS antes de enviar:", usuarioId);  // 👀 AQUI
 
-    const datos = {
-      usuarioid: usuarioId, // ya viene del backend
-      titulo: document.getElementById('titulo').value,
-      descripcion: document.getElementById('descripcion').value,
-      fecha_evento: document.getElementById('fecha_evento').value,
-      importante: document.getElementById('importante').checked
-    };
+    const usuarioid = usuarioId;
+    const titulo = document.getElementById('titulo').value.trim();
+    const descripcion = document.getElementById('descripcion').value.trim();
+    const fecha_evento = document.getElementById('fecha_evento').value;
+    const importante = document.getElementById('importante').checked;
 
+    let errores = [];
 
-    console.log('Evento enviado:', datos);
+    // Validaciones
+    if (!usuarioid) errores.push('El campo "Usuario ID" es obligatorio.');
+    if (!titulo) errores.push('El campo "Título" es obligatorio.');
+    if (!descripcion) errores.push('El campo "Descripción" es obligatorio.');
+    if (!fecha_evento) errores.push('Debes seleccionar una fecha para el evento.');
 
-    // Cierra el modal del formulario
-    const modal = bootstrap.Modal.getInstance(document.getElementById('formModal'));
-    modal.hide();
-    this.reset();
-  });
-});
-
-// Manejo del formulario de evento
-document.getElementById('eventoForm').addEventListener('submit', function (e) {
-  e.preventDefault();
-
-  const usuarioid = usuarioId;  // 🔥 ya viene de Django, no necesitas pedirlo del input
-  const titulo = document.getElementById('titulo').value.trim();
-  const descripcion = document.getElementById('descripcion').value.trim();
-  const fecha_evento = document.getElementById('fecha_evento').value;
-  const importante = document.getElementById('importante').checked;
-
-  let errores = [];
-
-  // Validación manual antes de enviar
-  if (!usuarioid) errores.push('El campo "Usuario ID" es obligatorio.');
-  if (!titulo) errores.push('El campo "Título" es obligatorio.');
-  if (!descripcion) errores.push('El campo "Descripción" es obligatorio.');
-  if (!fecha_evento) errores.push('Debes seleccionar una fecha para el evento.');
-
-  if (errores.length > 0) {
-    Swal.fire({
-      icon: 'error',
-      title: 'Campos incompletos',
-      html: errores.map(err => `<p>${err}</p>`).join(''),
-      confirmButtonColor: '#dc3545'
-    });
-    return;
-  }
-
-  // Si todo es válido, envía el fetch
-  fetch('/eventos/crear/', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-CSRFToken': csrfToken,  
-    },
-    body: JSON.stringify({
-      usuarioid,
-      titulo,
-      descripcion,
-      fecha_evento,
-      importante
-    })
-  })
-    .then(res => res.json())
-    .then(data => {
-      if (data.id) {
-        Swal.fire({
-          icon: 'success',
-          title: '¡Evento creado!',
-          text: 'Tu evento ha sido guardado exitosamente.',
-          confirmButtonColor: '#198754'
-        });
-
-        const modal = bootstrap.Modal.getInstance(document.getElementById('formModal'));
-        modal.hide();
-        e.target.reset();
-      } else {
-        // Mostrar errores enviados desde Django
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: data.error || 'No se pudo crear el evento.',
-          confirmButtonColor: '#dc3545'
-        });
-      }
-    })
-    .catch(err => {
-      console.error(err);
+    if (errores.length > 0) {
       Swal.fire({
         icon: 'error',
-        title: 'Error de red',
-        text: 'No se pudo conectar con el servidor.',
+        title: 'Campos incompletos',
+        html: errores.map(err => `<p>${err}</p>`).join(''),
         confirmButtonColor: '#dc3545'
       });
-    });
-});
+      return;
+    }
 
+    // Enviar evento al servidor
+    fetch('/eventos/crear/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken,
+      },
+      body: JSON.stringify({
+        usuarioid,
+        titulo,
+        descripcion,
+        fecha_evento,
+        importante
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.id) {
+          Swal.fire({
+            icon: 'success',
+            title: '¡Evento creado!',
+            text: 'Tu evento ha sido guardado exitosamente.',
+            confirmButtonColor: '#198754'
+          });
+
+          const modal = bootstrap.Modal.getInstance(document.getElementById('formModal'));
+          modal.hide();
+          this.reset();
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: data.error || 'No se pudo crear el evento.',
+            confirmButtonColor: '#dc3545'
+          });
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error de red',
+          text: 'No se pudo conectar con el servidor.',
+          confirmButtonColor: '#dc3545'
+        });
+      });
+  });
+});

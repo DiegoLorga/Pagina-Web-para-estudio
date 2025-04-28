@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let fullPlan = [];
     let currentIndex = 0;
     let interval = null;
-    let time = 1800; // 30 minutos
+    let time = 1800; // 30 minutos inicial
     let isPaused = false;
 
     fullPlan = buildPomodoroPlan(1800);
@@ -39,10 +39,8 @@ document.addEventListener('DOMContentLoaded', () => {
             clearInterval(interval);
             interval = null;
             const session = fullPlan[currentIndex];
-            if (session && session.type === 'study') {
-                sendNotification("¡Pomodoro terminado! Hora de descansar.");
-            } else if (session && session.type === 'break') {
-                sendNotification("¡Descanso terminado! Hora de concentrarte.");
+            if (session) {
+                sendNotification(session.type === 'study' ? "¡Pomodoro terminado! Hora de descansar." : "¡Descanso terminado! Hora de concentrarte.");
             }
             currentIndex++;
             if (currentIndex < fullPlan.length) {
@@ -71,8 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const next = fullPlan[currentIndex + 1];
         if (next) {
             if (next.type === 'break') {
-                const mins = Math.floor(next.duration / 60);
-                nextSessionMsg.textContent = `A continuación: descanso de ${mins} minutos.`;
+                nextSessionMsg.textContent = `A continuación: descanso de ${Math.floor(next.duration / 60)} minutos.`;
             } else {
                 nextSessionMsg.textContent = `A continuación: sesión de concentración.`;
             }
@@ -83,9 +80,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function buildPomodoroPlan(totalTime) {
         const plan = [];
-        const pomodoroDuration = 25;
-        const shortBreak = 5;
-        const longBreak = 15;
+        const pomodoroDuration = 25 * 60; // ⏳ 25 minutos
+        const shortBreak = 5 * 60;         // 💤 5 minutos descanso
+        const longBreak = 15 * 60;          // 💤 15 minutos largo
 
         let remaining = totalTime;
         let count = 0;
@@ -102,6 +99,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 plan.push({ type: 'break', duration: shortBreak });
                 remaining -= shortBreak;
             }
+        }
+
+        if (remaining > 0) {
+            plan.push({ type: 'study', duration: remaining });
         }
 
         return plan;
@@ -139,7 +140,6 @@ document.addEventListener('DOMContentLoaded', () => {
         resetBtn.style.display = "none";
     });
 
-    // 🔥 Cambiado para abrir modal con Bootstrap
     openModalBtn.addEventListener('click', () => {
         const modalInstance = new bootstrap.Modal(document.getElementById('timeModal'));
         modalInstance.show();
@@ -148,20 +148,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     timeSelect.addEventListener('change', () => {
         const selectedTime = parseInt(timeSelect.value);
-        let pomodoros = 0;
-        let descansos = 0;
-
-        switch (selectedTime) {
-            case 1800: pomodoros = 1; descansos = 1; break;
-            case 3600: pomodoros = 2; descansos = 2; break;
-            case 5400: pomodoros = 3; descansos = 3; break;
-            case 7800: pomodoros = 4; descansos = 3; break;
-            case 9600: pomodoros = 5; descansos = 4; break;
-            case 11100: pomodoros = 6; descansos = 5; break;
-            case 13200: pomodoros = 7; descansos = 6; break;
-            case 14700: pomodoros = 8; descansos = 7; break;
-            default: break;
-        }
+        let pomodoros = Math.floor(selectedTime / (25 * 60));
+        let descansos = pomodoros - 1;
+        if (descansos < 0) descansos = 0;
 
         breakCount.textContent = `Tendrás ${pomodoros} Pomodoro${pomodoros > 1 ? 's' : ''} y ${descansos} descanso${descansos !== 1 ? 's' : ''}.`;
     });
@@ -178,7 +167,6 @@ document.addEventListener('DOMContentLoaded', () => {
         nextSessionMsg.textContent = "";
         resetBtn.style.display = "none";
 
-        // 🔥 Cerrar el modal
         const modal = bootstrap.Modal.getInstance(document.getElementById('timeModal'));
         modal.hide();
     });
