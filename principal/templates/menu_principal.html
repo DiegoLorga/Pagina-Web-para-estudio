@@ -201,28 +201,45 @@
             const month = today.toLocaleString('default', { month: 'long' });
             const year = today.getFullYear();
 
-            let calendarHTML = `<div style="text-align:center; font-weight:bold; font-size: 16px;">${month} ${year}</div>`;
-            calendarHTML += '<table style="width:100%; margin-top:10px; text-align:center; font-size:12px;">';
-            calendarHTML += '<tr><th>Dom</th><th>Lun</th><th>Mar</th><th>Mié</th><th>Jue</th><th>Vie</th><th>Sáb</th></tr><tr>';
+            let calendarHTML = `
+                <div style="text-align:center; font-weight:bold; font-size: 18px; margin-bottom: 10px;">${month} ${year}</div>
+                <table style="width:100%; margin-top:10px; text-align:center; font-size:14px; table-layout: fixed;">
+                    <thead>
+                        <tr>
+                            <th style="width:14%;">Dom</th>
+                            <th style="width:14%;">Lun</th>
+                            <th style="width:14%;">Mar</th>
+                            <th style="width:14%;">Mié</th>
+                            <th style="width:14%;">Jue</th>
+                            <th style="width:14%;">Vie</th>
+                            <th style="width:14%;">Sáb</th>
+                        </tr>
+                    </thead>
+                    <tbody><tr>
+            `;
 
             const firstDay = new Date(today.getFullYear(), today.getMonth(), 1).getDay();
             const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
 
+            // Espacios vacíos antes del primer día
             for (let i = 0; i < firstDay; i++) {
                 calendarHTML += '<td></td>';
             }
 
+            // Días del mes
             for (let day = 1; day <= daysInMonth; day++) {
                 const currentDay = new Date(today.getFullYear(), today.getMonth(), day).getDay();
-                const styleToday = (day === today.getDate()) ? 'background:#ABC252; border-radius:50%; color:white;' : '';
-                calendarHTML += `<td style="${styleToday}">${day}</td>`;
+                const isToday = (day === today.getDate());
+                calendarHTML += `<td style="padding:8px;">
+                    <div style="display:inline-block; width:30px; height:30px; line-height:30px; ${isToday ? 'background:#ABC252; color:white; border-radius:50%;' : ''}">${day}</div>
+                </td>`;
 
                 if (currentDay === 6) {
                     calendarHTML += '</tr><tr>';
                 }
             }
 
-            calendarHTML += '</tr></table>';
+            calendarHTML += '</tr></tbody></table>';
             miniCalendar.innerHTML = calendarHTML;
         });
     </script>
