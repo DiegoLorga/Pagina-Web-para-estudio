@@ -69,7 +69,8 @@
 
         <!-- Tarjeta Calendario -->
         <div class="calendario" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#calendarModal">
-            <div class="titulo">Calendario</div>
+            <h2 class="titulo">Calendario</h2>
+            <div id="miniCalendar" style="margin-top: 10px;"></div> <!-- aquí insertamos el calendario pequeño -->
         </div>
 
         <!-- Tarjeta Tareas -->
@@ -192,6 +193,39 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const miniCalendar = document.getElementById('miniCalendar');
+            const today = new Date();
+            const month = today.toLocaleString('default', { month: 'long' });
+            const year = today.getFullYear();
+
+            let calendarHTML = `<div style="text-align:center; font-weight:bold; font-size: 16px;">${month} ${year}</div>`;
+            calendarHTML += '<table style="width:100%; margin-top:10px; text-align:center; font-size:12px;">';
+            calendarHTML += '<tr><th>Dom</th><th>Lun</th><th>Mar</th><th>Mié</th><th>Jue</th><th>Vie</th><th>Sáb</th></tr><tr>';
+
+            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1).getDay();
+            const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+
+            for (let i = 0; i < firstDay; i++) {
+                calendarHTML += '<td></td>';
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const currentDay = new Date(today.getFullYear(), today.getMonth(), day).getDay();
+                const styleToday = (day === today.getDate()) ? 'background:#ABC252; border-radius:50%; color:white;' : '';
+                calendarHTML += `<td style="${styleToday}">${day}</td>`;
+
+                if (currentDay === 6) {
+                    calendarHTML += '</tr><tr>';
+                }
+            }
+
+            calendarHTML += '</tr></table>';
+            miniCalendar.innerHTML = calendarHTML;
+        });
+    </script>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
