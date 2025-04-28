@@ -6,6 +6,10 @@ from .models import Estudiante
 def login_view(request):
     return render(request, 'login.html')
 
+def lista_view(request):
+    context = {}
+    return render(request, 'lista.html', context)
+
 
 def registro_estudiante(request):
     context = {}
