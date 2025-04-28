@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import redirect
 
 def timer(request):
-    return render(request, 'temporizador/timer.html')
+    return redirect('menu_principal')

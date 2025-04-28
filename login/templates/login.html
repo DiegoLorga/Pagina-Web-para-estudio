@@ -1,20 +1,23 @@
 {% load static %}
 <!DOCTYPE html>
-
-<html lang="en">
-
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name = "viewport" content="width=device-width,
-    initial-scale=1.0">
-    <title>Login Register Form</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login y Registro</title>
+
+    <!-- Iconos -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    
+    <!-- Tu CSS personalizado -->
     <link rel="stylesheet" href="{% static 'login/css/style.css' %}">
 </head>
 
 <body>
     <div class="container">
+        
+        <!-- FORMULARIO LOGIN -->
         <div class="form-box login">
             <form method="post" action="{% url 'login_estudiante' %}">
                 {% csrf_token %}
@@ -29,9 +32,9 @@
                 </div>
                 <button type="submit" class="btn">Iniciar sesión</button>
             </form>
-            
         </div>
 
+        <!-- FORMULARIO REGISTRO -->
         <div class="form-box register">
             <form method="post" action="{% url 'registrar_estudiante' %}">
                 {% csrf_token %}
@@ -41,7 +44,7 @@
                     <i class='bx bxs-user'></i>
                 </div>
                 <div class="input-box">
-                    <input type="text" name="correo" placeholder="Correo" required>
+                    <input type="email" name="correo" placeholder="Correo" required>
                     <i class='bx bxs-envelope'></i>
                 </div>
                 <div class="input-box">
@@ -49,27 +52,32 @@
                     <i class='bx bxs-lock-alt'></i>
                 </div>
                 <button type="submit" class="btn">Registrarse</button>
-                
             </form>
         </div>
 
+        <!-- CAJA VERDE QUE SE MUEVE -->
         <div class="toggle-box">
             <div class="toggle-panel toggle-left">
                 <h1>¡Hola, Bienvenido!</h1>
                 <p>¿No tienes una cuenta?</p>
-                <button class="btn register-btn">Registrate</button>
+                <button class="btn register-btn">Regístrate</button>
             </div>
-
             <div class="toggle-panel toggle-right">
                 <h1>¡Bienvenido de vuelta!</h1>
                 <p>¿Ya tienes una cuenta?</p>
-                <button class="btn login-btn">Inciar sesión</button>
+                <button class="btn login-btn">Iniciar sesión</button>
             </div>
         </div>
+
     </div>
 
+    <!-- Tu Script de movimiento -->
     <script src="{% static 'login/js/script.js' %}"></script>
+    
+    <!-- SweetAlert para los mensajes -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- ALERTAS -->
     <script>
         {% if error %}
         Swal.fire({
@@ -79,7 +87,7 @@
             confirmButtonColor: '#ABC252'
         });
         {% endif %}
-    
+
         {% if exito %}
         Swal.fire({
             icon: 'success',
@@ -88,33 +96,27 @@
             confirmButtonColor: '#ABC252'
         });
         {% endif %}
+
+        {% if error_login %}
+        Swal.fire({
+            icon: 'error',
+            title: 'Error al iniciar sesión',
+            text: '{{ error_login }}',
+            confirmButtonColor: '#ABC252'
+        });
+        {% endif %}
+
+        {% if exito_login %}
+        Swal.fire({
+            icon: 'success',
+            title: '¡Bienvenido!',
+            text: '{{ exito_login }}',
+            confirmButtonColor: '#ABC252'
+        }).then(() => {
+            window.location.href = "{% url 'menu_principal' %}";
+        });
+        {% endif %}
     </script>
-
-<script>
-    {% if error_login %}
-    Swal.fire({
-        icon: 'error',
-        title: 'Error al iniciar sesión',
-        text: '{{ error_login }}',
-        confirmButtonColor: '#ABC252'
-    });
-    {% endif %}
-
-    {% if exito_login %}
-    Swal.fire({
-        icon: 'success',
-        title: '¡Bienvenido!',
-        text: '{{ exito_login }}',
-        confirmButtonColor: '#ABC252'
-    }).then(() => {
-        // Puedes redirigir a otra página después del login
-         window.location.href = '/agenda/';
-    });
-    {% endif %}
-</script>
-
-    
-    
 
 </body>
 </html>

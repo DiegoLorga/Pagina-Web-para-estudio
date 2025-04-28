@@ -1,3 +1,4 @@
+const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 function getCookie(name) {
   let cookieValue = null;
   if (document.cookie && document.cookie !== '') {
@@ -83,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function () {
       fecha_evento: document.getElementById('fecha_evento').value,
       importante: document.getElementById('importante').checked
     };
-    
+
 
     console.log('Evento enviado:', datos);
 
@@ -123,11 +124,11 @@ document.getElementById('eventoForm').addEventListener('submit', function (e) {
   }
 
   // Si todo es válido, envía el fetch
-  fetch('/api/eventos/crear/', {
+  fetch('/eventos/crear/', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'X-CSRFToken': getCookie('csrftoken')
+      'X-CSRFToken': csrfToken,  
     },
     body: JSON.stringify({
       usuarioid,
@@ -137,37 +138,37 @@ document.getElementById('eventoForm').addEventListener('submit', function (e) {
       importante
     })
   })
-  .then(res => res.json())
-  .then(data => {
-    if (data.id) {
-      Swal.fire({
-        icon: 'success',
-        title: '¡Evento creado!',
-        text: 'Tu evento ha sido guardado exitosamente.',
-        confirmButtonColor: '#198754'
-      });
+    .then(res => res.json())
+    .then(data => {
+      if (data.id) {
+        Swal.fire({
+          icon: 'success',
+          title: '¡Evento creado!',
+          text: 'Tu evento ha sido guardado exitosamente.',
+          confirmButtonColor: '#198754'
+        });
 
-      const modal = bootstrap.Modal.getInstance(document.getElementById('formModal'));
-      modal.hide();
-      e.target.reset();
-    } else {
-      // Mostrar errores enviados desde Django
+        const modal = bootstrap.Modal.getInstance(document.getElementById('formModal'));
+        modal.hide();
+        e.target.reset();
+      } else {
+        // Mostrar errores enviados desde Django
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: data.error || 'No se pudo crear el evento.',
+          confirmButtonColor: '#dc3545'
+        });
+      }
+    })
+    .catch(err => {
+      console.error(err);
       Swal.fire({
         icon: 'error',
-        title: 'Error',
-        text: data.error || 'No se pudo crear el evento.',
+        title: 'Error de red',
+        text: 'No se pudo conectar con el servidor.',
         confirmButtonColor: '#dc3545'
       });
-    }
-  })
-  .catch(err => {
-    console.error(err);
-    Swal.fire({
-      icon: 'error',
-      title: 'Error de red',
-      text: 'No se pudo conectar con el servidor.',
-      confirmButtonColor: '#dc3545'
     });
-  });
 });
 

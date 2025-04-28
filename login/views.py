@@ -1,11 +1,9 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.hashers import make_password
-from django.contrib.auth.hashers import check_password
+from django.contrib.auth.hashers import make_password, check_password
 from .models import Estudiante
 
 def login_view(request):
-    return render(request, 'login.html')
-
+    return render(request, 'login.html')  # Solo muestra el formulario
 
 def registro_estudiante(request):
     context = {}
@@ -39,11 +37,8 @@ def login_estudiante(request):
         try:
             estudiante = Estudiante.objects.get(correo=correo)
             if check_password(password, estudiante.password):
-                request.session['usuario_id'] = estudiante.id 
-                context['exito_login'] = f"Bienvenido {estudiante.nombre}"
-                # Aquí puedes usar sesiones o redirigir a otra vista
-                # request.session['usuario_id'] = estudiante.id
-                # return redirect('dashboard')
+                request.session['usuario_id'] = estudiante.id
+                return redirect('menu_principal')  # 🔥 Aquí debes tener tu vista de menú
             else:
                 context['error_login'] = "Contraseña incorrecta."
         except Estudiante.DoesNotExist:

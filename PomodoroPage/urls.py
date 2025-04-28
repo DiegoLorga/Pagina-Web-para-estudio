@@ -14,17 +14,20 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from principal import views 
-from registro import views 
-from login import views
 from django.contrib import admin
-from django.urls import path
-from django.urls import include
+from django.urls import path, include
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('llama/', include('llamaapp.urls')),
-    path('', include('eventosAgenda.urls')),
-    path('',include('login.urls')),
-    path('temporizador/', include('temporizador.urls')),
+    path('admin/', admin.site.urls),  # Panel de administrador Django
+
+    # Apps individuales
+    path('llama/', include('llamaapp.urls')),               # App de pruebas "llama"
+    path('login/', include('login.urls')),                  # App de Login y Registro
+    path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),  # Cierre de sesión
+    path('temporizador/', include('temporizador.urls')),    # Temporizador si quieres accederlo directo
+    path('eventos/', include('eventosAgenda.urls')),        # API de eventos (crear, editar, eliminar eventos)
+
+    # Página principal
+    path('', include('principal.urls')),  #  El menú principal (pomodoro + calendario + tareas + música)
 ]

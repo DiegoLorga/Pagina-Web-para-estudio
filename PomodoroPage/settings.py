@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'llamaapp',
     'eventosAgenda',
     'tareas',
-    'temporizador'
+    'temporizador',
 ]
 
 MIDDLEWARE = [
@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'PomodoroPage.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',  # <--- muy importante esto
     }
 }
 
@@ -133,4 +133,5 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 import os
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'llamaapp/static')]
+
+LOGIN_URL = '/login/'

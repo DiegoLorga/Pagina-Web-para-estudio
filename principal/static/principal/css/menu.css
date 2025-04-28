@@ -1,14 +1,28 @@
-
 body {
     margin: 0;  /* Elimina márgenes predeterminados */
     padding: 0;
     font-family: 'Poppins', sans-serif; /* Aplica la fuente globalmente */
 }
 .navar {
-    width: 1728px;
-    height: 129px;
-    flex-shrink: 0;
+    width: 100%; /* No pongas 1728px fijo, usa 100% */
+    height: 80px;
     background: #F2E9E1;
+    display: flex;
+    justify-content: space-between; /* 🔥 Separa izquierda y derecha */
+    align-items: center;
+    padding: 0 30px;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Usuario y racha a la izquierda */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #1C140D;
 }
 
 .timer-container {
@@ -180,4 +194,28 @@ box-sizing: border-box; /* Incluye padding en el ancho/alto total */
     padding: 30px 0 0 54px; /* Arriba | Derecha | Abajo | Izquierda */
     box-sizing: border-box; /* Incluye padding en el ancho/alto total */
 }
+/* Estilos solo para el botón "Cerrar sesión" */
+.logout {
+    display: flex;
+    align-items: center;
+    margin-left: auto; /* 🔥 Mueve el botón a la derecha */
+}
 
+.logout form {
+    margin: 0;
+}
+
+.logout-btn {
+    background: none;
+    border: none;
+    color: #1C140D;
+    font-size: 16px;
+    font-weight: bold; /* 🔥 Letra en negrita */
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    text-decoration: none;
+}
+
+.logout-btn:hover {
+    text-decoration: underline;
+}

@@ -3,34 +3,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const startBtn = document.getElementById('startBtn');
     const resetBtn = document.getElementById('resetBtn');
     const openModalBtn = document.getElementById('openModalBtn');
-    const modal = document.getElementById('timeModal');
     const timeSelect = document.getElementById('timeSelect');
     const setTimeBtn = document.getElementById('setTimeBtn');
     const breakCount = document.getElementById('breakCount');
     const nextSessionMsg = document.getElementById('nextSession');
-    const sound = new Audio('/static/temporizador/sounds/notificacion.mp3');
-
+    const sound = new Audio('/static/principal/sounds/notificacion.mp3');
 
     let fullPlan = [];
     let currentIndex = 0;
     let interval = null;
-    let time = 1800; // 30 minutos en segundos
+    let time = 1800; // 30 minutos
     let isPaused = false;
 
-    // Establecer 30 min como predeterminado al cargar
     fullPlan = buildPomodoroPlan(1800);
     time = fullPlan.length > 0 ? fullPlan[0].duration : 1800;
     updateTimer();
-    //  Pide permiso para mostrar notificaciones
+
     if (Notification.permission !== "granted") {
         Notification.requestPermission();
     }
 
     function sendNotification(message) {
         if (Notification.permission === "granted") {
-            new Notification(message); 
+            new Notification(message);
             sound.play();
-            
         }
     }
 
@@ -43,7 +39,6 @@ document.addEventListener('DOMContentLoaded', () => {
             clearInterval(interval);
             interval = null;
             const session = fullPlan[currentIndex];
-            // ⚡ Notificación al terminar la sesión actual
             if (session && session.type === 'study') {
                 sendNotification("¡Pomodoro terminado! Hora de descansar.");
             } else if (session && session.type === 'break') {
@@ -87,17 +82,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function buildPomodoroPlan(totalTime) {
-        // const plan = [];
-        // const pomodoroDuration = 5 * 60;
-        // const shortBreak = 5 * 60;
-        // const longBreak = 15 * 60;   
-
-
         const plan = [];
-        const pomodoroDuration = 25; 
-        const shortBreak = 5;        
-        const longBreak = 15;         
-        
+        const pomodoroDuration = 25;
+        const shortBreak = 5;
+        const longBreak = 15;
 
         let remaining = totalTime;
         let count = 0;
@@ -143,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
         interval = null;
         isPaused = false;
         currentIndex = 0;
-        time = 1800; // Reiniciar a 30 minutos
+        time = 1800;
         fullPlan = buildPomodoroPlan(1800);
         timer.textContent = "30:00";
         startBtn.innerHTML = '<i class="fas fa-play"></i> <span></span>';
@@ -151,8 +139,10 @@ document.addEventListener('DOMContentLoaded', () => {
         resetBtn.style.display = "none";
     });
 
+    // 🔥 Cambiado para abrir modal con Bootstrap
     openModalBtn.addEventListener('click', () => {
-        modal.style.display = 'flex';
+        const modalInstance = new bootstrap.Modal(document.getElementById('timeModal'));
+        modalInstance.show();
         timeSelect.dispatchEvent(new Event('change'));
     });
 
@@ -162,24 +152,15 @@ document.addEventListener('DOMContentLoaded', () => {
         let descansos = 0;
 
         switch (selectedTime) {
-            case 1800:
-                pomodoros = 1; descansos = 1; break;
-            case 3600:
-                pomodoros = 2; descansos = 2; break;
-            case 5400:
-                pomodoros = 3; descansos = 3; break;
-            case 7800:
-                pomodoros = 4; descansos = 3; break;
-            case 9600:
-                pomodoros = 5; descansos = 4; break;
-            case 11100:
-                pomodoros = 6; descansos = 5; break;
-            case 13200:
-                pomodoros = 7; descansos = 6; break;
-            case 14700:
-                pomodoros = 8; descansos = 7; break;
-            default:
-                break;
+            case 1800: pomodoros = 1; descansos = 1; break;
+            case 3600: pomodoros = 2; descansos = 2; break;
+            case 5400: pomodoros = 3; descansos = 3; break;
+            case 7800: pomodoros = 4; descansos = 3; break;
+            case 9600: pomodoros = 5; descansos = 4; break;
+            case 11100: pomodoros = 6; descansos = 5; break;
+            case 13200: pomodoros = 7; descansos = 6; break;
+            case 14700: pomodoros = 8; descansos = 7; break;
+            default: break;
         }
 
         breakCount.textContent = `Tendrás ${pomodoros} Pomodoro${pomodoros > 1 ? 's' : ''} y ${descansos} descanso${descansos !== 1 ? 's' : ''}.`;
@@ -196,7 +177,10 @@ document.addEventListener('DOMContentLoaded', () => {
         startBtn.innerHTML = '<i class="fas fa-play"></i> <span></span>';
         nextSessionMsg.textContent = "";
         resetBtn.style.display = "none";
-        modal.style.display = 'none';
+
+        // 🔥 Cerrar el modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('timeModal'));
+        modal.hide();
     });
 
     timeSelect.dispatchEvent(new Event('change'));
