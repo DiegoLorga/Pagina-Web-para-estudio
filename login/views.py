@@ -7,12 +7,13 @@ def login_view(request):
     return render(request, 'login.html')
 
 def lista_view(request):
+    # Vista protegida: sólo estudiantes logueados
+    if 'usuario_id' not in request.session:
+        return redirect('login')
     context = {}
     return render(request, 'lista.html', context)
 
 def registro_estudiante(request):
-    context = {}
-
     if request.method == 'POST':
         nombre = request.POST.get('nombre')
         correo = request.POST.get('correo')
@@ -20,17 +21,20 @@ def registro_estudiante(request):
 
         if nombre and correo and password:
             if Estudiante.objects.filter(correo=correo).exists():
-                context['error'] = "Este correo ya está registrado."
+                context = {'error': "Este correo ya está registrado."}
+                return render(request, 'login.html', context)
             else:
-                Estudiante.objects.create(
+                estudiante = Estudiante.objects.create(
                     nombre=nombre,
                     correo=correo,
                     password=make_password(password),
                     rachaDias=0
                 )
-                context['exito'] = "Registro exitoso. ¡Ahora puedes iniciar sesión!"
-
-    return render(request, 'login.html', context)
+                # 🚀 Loguear automáticamente al usuario
+                request.session['usuario_id'] = estudiante.id
+                request.session['usuario_nombre'] = estudiante.nombre
+                return redirect('lista_view')
+    return render(request, 'login.html')
 
 def login_estudiante(request):
     context = {}
@@ -43,7 +47,9 @@ def login_estudiante(request):
             estudiante = Estudiante.objects.get(correo=correo)
             if check_password(password, estudiante.password):
                 request.session['usuario_id'] = estudiante.id
-                return redirect('menu_principal')  #  vista de menú
+                request.session['usuario_nombre'] = estudiante.nombre
+                return redirect('lista_view')
+
             else:
                 context['error_login'] = "Contraseña incorrecta."
         except Estudiante.DoesNotExist:
