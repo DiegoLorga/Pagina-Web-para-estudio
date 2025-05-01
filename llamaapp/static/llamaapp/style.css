@@ -1,0 +1,38 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f7f7f7;
+    padding: 30px;
+  }
+  
+  .container {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    max-width: 750px;
+    margin: auto;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  h1 {
+    color: #1c140D;
+  }
+  
+  button {
+    background-color: #CBE86B;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .resultado-caja {
+    background-color: #f2e9e1;         
+    border: 1px solid #ccc;           /* Borde visible (gris claro) */
+    border-radius: 5px;              
+    max-height: 300px;              
+    overflow-y: auto;              /* Scroll vertical si supera altura max :contentReference[oaicite:4]{index=4}*/
+    width: 100%;                  
+    text-align: justify;        
+    padding: 1rem;              
+  }

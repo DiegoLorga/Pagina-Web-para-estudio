@@ -7,7 +7,12 @@ import json
 from datetime import datetime
 
 def agenda_view(request):
-    return render(request, 'eventosAgenda/agenda.html')
+    usuario_id = request.session.get('usuario_id')
+
+    if not usuario_id:
+        return redirect('login')  # Si no está logueado, regresa al login
+
+    return render(request, 'eventosAgenda/agenda.html', {'usuario_id': usuario_id})
 
 # 🔹 Obtener eventos por id del estudiante
 def obtener_eventos_por_usuario(request, estudiante_id):

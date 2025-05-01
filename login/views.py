@@ -3,6 +3,7 @@ from django.contrib.auth.hashers import make_password, check_password
 from .models import Estudiante
 
 def login_view(request):
+
     return render(request, 'login.html')
 
 def lista_view(request):
@@ -48,6 +49,7 @@ def login_estudiante(request):
                 request.session['usuario_id'] = estudiante.id
                 request.session['usuario_nombre'] = estudiante.nombre
                 return redirect('lista_view')
+
             else:
                 context['error_login'] = "Contraseña incorrecta."
         except Estudiante.DoesNotExist:

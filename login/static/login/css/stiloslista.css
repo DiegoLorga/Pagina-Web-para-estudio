@@ -10,9 +10,8 @@ body {
     font-family: 'Lato', sans-serif;
     margin: 0;
     height: 100vh;
-    background-color: var(--diabled);
+    /* background-color: var(--diabled);  --> */
 }
-
 *:first-letter {
     text-transform: capitalize;
 }
