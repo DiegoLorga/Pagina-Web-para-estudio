@@ -4,9 +4,10 @@
 
 <head>
     <script>
-        const usuarioId = "{{ usuario_id|default:'' }}";
-        console.log("usuarioId cargado en HTML:", usuarioId);
+        const usuarioId = "{{ usuario.id }}";
+        console.log("ID del usuario:", usuarioId);
     </script>
+
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,7 +35,15 @@
     <div class="navar">
         <div class="user-info">
             <span class="username">👤 {{ user.username }}</span>
-            <span class="streak">🔥 1 día de racha</span>
+            <span class="streak">
+                {% if ya_cumplio %}
+                <img src="{% static 'principal/image/rachaActiva.png' %}" alt="Racha activa" class="rachaImage">
+                {% else %}
+                <img src="{% static 'principal/image/rachaInactiva.png' %}" alt="Racha inactiva" class="rachaImage">
+                {% endif %}
+                <strong><span id="rachaTexto">{{ usuario.rachaDias }}</span></strong> día de racha
+            </span>
+
         </div>
         <div class="logout">
             <form method="post" action="{% url 'logout' %}">
@@ -56,6 +65,7 @@
             </button>
 
             <div class="timer" id="timer">25:00</div>
+            <div id="mensajeFinal" class="mensaje-final"></div>
             <div id="nextSession"></div>
             <div class="contenedorBoton">
                 <button id="startBtn" class="boton-pomodoro"><i class="fas fa-play"></i> <span></span></button>

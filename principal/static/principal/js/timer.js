@@ -15,7 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let time = 1800; // 30 minutos inicial
     let isPaused = false;
 
-    fullPlan = buildPomodoroPlan(1800);
+    // fullPlan = buildPomodoroPlan(1800);
+    fullPlan = buildPomodoroPlanTest();
+
     time = fullPlan.length > 0 ? fullPlan[0].duration : 1800;
     updateTimer();
 
@@ -29,24 +31,144 @@ document.addEventListener('DOMContentLoaded', () => {
             sound.play();
         }
     }
+    function buildPomodoroPlanTest() {
+        return [
+            { type: 'study', duration: 25 },
+            { type: 'break', duration: 10 }
+        ];
+    }
+   /*  
+   function updateTimer() { /////////////////codigo real ///////////////////////
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    timer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
+    if (time <= 0) {
+        clearInterval(interval);
+        interval = null;
+
+        const session = fullPlan[currentIndex];
+
+        if (session) {
+            sendNotification(
+                session.type === 'study'
+                    ? "¡Pomodoro terminado! Hora de descansar."
+                    : "¡Descanso terminado! Hora de concentrarte."
+            );
+
+            if (session.type === 'study') {
+                fetch('/principal/aumentar-racha/', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCSRFToken(),
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({})
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.ok) {
+                        console.log(' Racha actualizada:', data.racha);
+
+                        //  Actualizar imagen
+                        const rachaImg = document.getElementById('rachaImagen');
+                        if (rachaImg) {
+                            rachaImg.src = "/static/principal/image/rachaActiva.png";
+                        }
+
+                        //  Actualizar texto de racha
+                        const rachaTexto = document.getElementById('rachaTexto');
+                        if (rachaTexto) {
+                            rachaTexto.textContent = data.racha;
+                        }
+                    } else {
+                        console.warn(' Error al aumentar la racha:', data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error(' Error en la petición:', error);
+                });
+            }
+        }
+
+        currentIndex++;
+        if (currentIndex < fullPlan.length) {
+            startSession();
+        } else {
+            document.getElementById('timer').style.display = 'none';  // Oculta el cronómetro
+            const mensajeFinal = document.getElementById('mensajeFinal');
+            mensajeFinal.textContent = "¡Fin!";
+            mensajeFinal.style.display = 'block';
+            startBtn.innerHTML = '<i class="fas fa-play"></i> <span></span>';
+            nextSessionMsg.textContent = "";
+            resetBtn.style.display = "none";
+        }
+    } else {
+        time--;
+    }
+}
+
+     */
+
+
+    ////////////////////////////tester/////////////////////////////////////////////
     function updateTimer() {
         const minutes = Math.floor(time / 60);
         const seconds = time % 60;
         timer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-
+    
         if (time <= 0) {
             clearInterval(interval);
             interval = null;
+    
             const session = fullPlan[currentIndex];
+    
             if (session) {
-                sendNotification(session.type === 'study' ? "¡Pomodoro terminado! Hora de descansar." : "¡Descanso terminado! Hora de concentrarte.");
+                sendNotification(
+                    session.type === 'study'
+                        ? "Pomodoro de prueba terminado."
+                        : "Descanso de prueba terminado."
+                );
+    
+                if (session.type === 'study') {
+                    fetch('/aumentar-racha/', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': getCSRFToken(),
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({})
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.ok) {
+                            console.log(' Racha de prueba actualizada:', data.racha);
+    
+                            //  Cambiar imagen a racha activa
+                            const img = document.getElementById('rachaImagen');
+                            img.src = "/static/principal/image/rachaActiva.png";
+    
+                            //  Actualizar número de días de racha
+                            const rachaTexto = document.getElementById('rachaTexto');
+                            rachaTexto.textContent = data.racha;
+                        } else {
+                            console.warn(' Error al aumentar la racha:', data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error(' Error en fetch:', error);
+                    });
+                }
             }
+    
             currentIndex++;
             if (currentIndex < fullPlan.length) {
                 startSession();
             } else {
-                timer.textContent = "¡Fin total!";
+                document.getElementById('timer').style.display = 'none';
+                const mensajeFinal = document.getElementById('mensajeFinal');
+                mensajeFinal.textContent = "¡Prueba completada!";
+                mensajeFinal.style.display = 'block';
                 startBtn.innerHTML = '<i class="fas fa-play"></i> <span></span>';
                 nextSessionMsg.textContent = "";
                 resetBtn.style.display = "none";
@@ -55,7 +177,20 @@ document.addEventListener('DOMContentLoaded', () => {
             time--;
         }
     }
-
+    
+    
+    function getCSRFToken() {
+        const name = 'csrftoken';
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            let cookie = cookies[i].trim();
+            if (cookie.startsWith(name + '=')) {
+                return decodeURIComponent(cookie.substring(name.length + 1));
+            }
+        }
+        return '';
+    }
+    
     function startSession() {
         const session = fullPlan[currentIndex];
         if (!isPaused) {
@@ -80,9 +215,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function buildPomodoroPlan(totalTime) {
         const plan = [];
-        const pomodoroDuration = 25 * 60; // ⏳ 25 minutos
-        const shortBreak = 5 * 60;         // 💤 5 minutos descanso
-        const longBreak = 15 * 60;          // 💤 15 minutos largo
+        const pomodoroDuration = 25 * 60; //  25 minutos
+        const shortBreak = 5 * 60;         //  5 minutos descanso
+        const longBreak = 15 * 60;          //  15 minutos largo
 
         let remaining = totalTime;
         let count = 0;
@@ -164,8 +299,8 @@ document.addEventListener('DOMContentLoaded', () => {
         time = fullPlan.length > 0 ? fullPlan[0].duration : selectedTime;
         updateTimer();
         startBtn.innerHTML = '<i class="fas fa-play"></i> <span></span>';
-        nextSessionMsg.textContent = "";
-        resetBtn.style.display = "none";
+        document.getElementById('timer').style.display = 'block';
+        document.getElementById('mensajeFinal').style.display = 'none';        
 
         const modal = bootstrap.Modal.getInstance(document.getElementById('timeModal'));
         modal.hide();
