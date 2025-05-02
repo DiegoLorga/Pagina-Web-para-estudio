@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'eventosAgenda',
     'tareas',
     'temporizador',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [

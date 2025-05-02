@@ -144,7 +144,7 @@ body {
 
 /* Siguiente sesión Pomodoro */
 #nextSession {
-    margin-top: 10px;
+    margin-top: -10px;
     margin-left: -10px;
     color: #1C140D;
     min-height: 30px;
@@ -153,6 +153,32 @@ body {
     justify-content: center;
 }
 
+/* fin sesion Pomodoro */
+.mensaje-final {
+    font-size: 80px;
+    font-weight: 700;
+    margin-top: 80px;
+    display: none;              /* Oculto por defecto */
+    font-size: 2rem;
+    font-weight: 600;
+    color: #1C140D;
+    font-family: Inter, sans-serif;
+    margin-top: 16px;
+    text-align: center;
+   
+}
+.rachaImage{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+.rachaVideo {
+    width: 60px;
+    margin-right: 10px;
+    vertical-align: middle;
+}
 /* ------------------------------------------- */
 /* Calendario */
 .calendario {
