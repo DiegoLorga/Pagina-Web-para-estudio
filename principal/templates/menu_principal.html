@@ -74,22 +74,30 @@
         </div>
 
         <!-- Tarjeta Tareas -->
+        <link href="https://fonts.googleapis.com/css2?family=Lato:wght@100;400;900&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'login/css/stiloslista.css' %}">
+
+
         <div class="tareas">
             <h2 class="titulo">Tareas</h2>
-            <div class="task-header">
-                <div class="date-inline">
-                    <span id="dateNumber"></span>
-                    <span id="dateMonth"></span>
-                    <span id="dateYear"></span>
-                    <span id="dateText"></span>
-                </div>
-            </div>
-            <form class="task-form" onsubmit="addNewTask(event)">
-                <input type="text" name="taskText" placeholder="Nueva tarea" autocomplete="off">
+            <div class="task-header"></div>
+
+            <form id="taskForm" class="task-form" method="POST" data-url="{% url 'tareas:crear_tarea' %}">
+                {% csrf_token %}
+                <input type="text" name="titulo" id="taskInput" placeholder="Nueva tarea" autocomplete="off" required>
+                <input type="hidden" name="descripcion" value="">
+                <input type="hidden" name="estado" value="0">
                 <button type="submit">+</button>
             </form>
-            <div id="tasksContainer" class="tasks-list"></div>
+            <script src="{% static 'tareas/js/tareas_ajax.js' %}"></script>
+
+            <div id="tasksContainer" class="tasks-list">
+                {% for tarea in tareas %}
+                    {% include "partials/tarea.html" %}
+                {% endfor %}
+            </div>            
         </div>
+
         <!-- Tarjeta Música -->
         <div class="musica">
             <div class="titulo">Música</div>
