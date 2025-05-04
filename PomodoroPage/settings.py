@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'principal',
     'registro',
     'login',
-    'llamaapp',
     'eventosAgenda',
     'tareas',
     'temporizador',
