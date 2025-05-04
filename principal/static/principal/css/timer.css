@@ -359,3 +359,50 @@ body {
 .logout-btn:hover {
     text-decoration: underline;
 }
+
+.squirrel-img {
+    position: fixed;
+    bottom: 10px;          
+    right: 25px;           
+    width: 120px;
+    height: auto;
+    z-index: 999;
+}
+.spinner {
+    display: none;
+    text-align: center;
+    margin-top: 15px;
+}
+
+/* Estilo para botones seleccionados en el quiz */
+#quiz-opciones .btn-success {
+    background-color: #65c16e;
+    color: white;
+    border-color: #65c16e;
+  }
+  
+  #quiz-opciones .btn-danger {
+    background-color: #e25e5e;
+    color: white;
+    border-color: #e25e5e;
+  }
+  
+  #quiz-opciones .btn:disabled {
+    opacity: 0.85;
+    cursor: default;
+  }
+  
+  #quiz-container {
+    animation: fadeIn 0.4s ease-in-out;
+  }
+  
+  #quiz-final h5 {
+    font-size: 1.5rem;
+    color: #3c763d;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
