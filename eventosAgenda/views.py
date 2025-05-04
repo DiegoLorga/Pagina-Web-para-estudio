@@ -14,10 +14,6 @@ def agenda_view(request):
 
     return render(request, 'eventosAgenda/agenda.html', {'usuario_id': usuario_id})
 
-# 🔹 Obtener eventos por id del estudiante
-def obtener_eventos_por_usuario(request, estudiante_id):
-    eventos = Agenda.objects.filter(usuarioid__id=estudiante_id).values()
-    return JsonResponse(list(eventos), safe=False)
 
 # 🔹 Obtener eventos a partir de una fecha
 def obtener_eventos_desde_fecha(request, fecha):
@@ -27,11 +23,14 @@ def obtener_eventos_desde_fecha(request, fecha):
 # 🔹 Crear un nuevo evento
 @csrf_exempt
 def crear_evento(request):
+    
     if request.method == 'POST':
         data = json.loads(request.body)
+        print("ID de usuario recibido:", data.get('usuarioid'))
+
         try:
             agenda = Agenda.objects.create(
-                usuarioid_id=data['usuarioid'],  # usar _id para asignar clave foránea
+                usuarioid_id=data['usuarioid'],  # usa _id para indicar que es el valor de la FK
                 titulo=data['titulo'],
                 descripcion=data['descripcion'],
                 fecha_evento=data['fecha_evento'],
@@ -70,3 +69,15 @@ def editar_evento(request, evento_id):
         except Agenda.DoesNotExist:
             return JsonResponse({'error': 'Evento no encontrado'}, status=404)
     return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+
+def obtener_eventos_usuario(request):
+    usuario_id = request.session.get('usuario_id')
+    
+    if not usuario_id:
+        return JsonResponse({'error': 'Usuario no autenticado'}, status=401)
+
+    eventos = Agenda.objects.filter(usuarioid_id=usuario_id).values(
+        'id', 'titulo', 'descripcion', 'fecha_evento', 'importante'
+    )
+    return JsonResponse(list(eventos), safe=False)

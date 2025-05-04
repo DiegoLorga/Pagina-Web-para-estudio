@@ -1,3 +1,4 @@
+
 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
 function getCookie(name) {
@@ -20,16 +21,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const initCalendar = () => {
     const calendarEl = document.getElementById('calendar');
-
+  
     calendar = new FullCalendar.Calendar(calendarEl, {
-      locale: 'es', // idioma español
+      locale: 'es',
       initialView: 'dayGridMonth',
+      allDayText: 'Eventos',
+      height: '700px',
+      allDaySlot: true,
+      slotMinTime: "00:00:00",
+      slotMaxTime: "00:00:00",
       headerToolbar: {
         left: 'agregarEventoBtn prev,next today',
         center: 'title',
         right: 'dayGridMonth timeGridWeek timeGridDay'
       },
-      buttonText: {  // traducir botones internos
+      buttonText: {
         today: 'Hoy',
         month: 'Mes',
         week: 'Semana',
@@ -44,42 +50,83 @@ document.addEventListener('DOMContentLoaded', function () {
           }
         }
       },
-      events: [
-        { title: 'Tarea de Matemáticas', start: '2025-04-20' },
-        { title: 'Revisión de Proyecto', start: '2025-04-23' }
-      ]
+    
+      eventContent: function(arg) {
+        const viewType = arg.view.type;
+        if (viewType === 'timeGridWeek' || viewType === 'timeGridDay') {
+          const evento = arg.event;
+          const isImportante = evento.extendedProps.importante;
+      
+          const contenedor = document.createElement('div');
+          contenedor.style.padding = '10px';
+          contenedor.style.borderRadius = '10px';
+          contenedor.style.backgroundColor = isImportante ? '#ABC252' : '#d3d3d3';
+          contenedor.style.border = `1px solid ${isImportante ? '#ABC252' : '#d3d3d3'}`;
+          contenedor.style.color = '#000';
+          contenedor.style.fontSize = '0.9rem';
+          contenedor.style.lineHeight = '1.4';
+          contenedor.style.whiteSpace = 'normal';
+          contenedor.style.wordWrap = 'break-word';
+          contenedor.style.height = '100%';
+          contenedor.style.overflow = 'hidden';
+      
+          contenedor.innerHTML = `
+  <div style="font-weight:bold; font-size:1rem; margin-bottom:6px;">
+    ${isImportante ? '📍' : '📌'} ${evento.title}
+  </div>
+  <div style="margin-bottom:6px;">
+    ${evento.extendedProps.descripcion}
+  </div>
+  <div style="font-size:0.75rem; font-style:italic; color:#333;">
+    ${isImportante ? '🔥 Evento importante' : ''}
+  </div>
+`;
+
+      
+          return { domNodes: [contenedor] };
+        }
+        return true;
+      }
+      
     });
-
+    
+    
+  
     calendar.render();
-
-    // 🔽 Mejorar estilo del botón "Agregar evento"
-    const botonAgregar = document.querySelector('.fc-agregarEventoBtn-button');
-    if (botonAgregar) {
-      botonAgregar.classList.remove('fc-button', 'fc-button-primary');
-      botonAgregar.classList.add('btn', 'btn-success', 'me-2');
-      botonAgregar.style.transition = 'transform 0.2s ease, box-shadow 0.2s ease';
-
-      botonAgregar.addEventListener('mouseover', () => {
-        botonAgregar.style.transform = 'scale(1.05)';
-        botonAgregar.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.2)';
-      });
-
-      botonAgregar.addEventListener('mouseout', () => {
-        botonAgregar.style.transform = 'scale(1)';
-        botonAgregar.style.boxShadow = 'none';
-      });
-    }
   };
+  
 
-  // Renderizar calendario solo cuando se abre el modal
   const calendarModal = document.getElementById('calendarModal');
   calendarModal.addEventListener('shown.bs.modal', function () {
     if (!calendar) {
       initCalendar();
     }
+
+    if (calendar.getEventSources().length > 0) {
+      calendar.getEventSources().forEach(source => source.remove());
+    }
+
+    fetch('/eventos/usuario/')
+  .then(res => res.json())
+  .then(data => {
+    const eventosFormateados = data.map(evt => ({
+      title: evt.titulo,
+      start: evt.fecha_evento,
+      allDay: true,
+      backgroundColor: evt.importante ? '#ABC252' : '#d3d3d3',
+      borderColor: evt.importante ? '#ABC252' : '#d3d3d3',
+      textColor: '#000',
+      descripcion: evt.descripcion,
+      importante: evt.importante
+    }));
+    calendar.addEventSource(eventosFormateados);
+  })
+
+      .catch(err => {
+        console.error("🔴 Error al obtener eventos del usuario:", err);
+      });
   });
 
-  // Manejo del formulario de evento
   document.getElementById('eventoForm').addEventListener('submit', function (e) {
     e.preventDefault();
 
@@ -91,7 +138,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let errores = [];
 
-    // Validaciones
     if (!usuarioid) errores.push('El campo "Usuario ID" es obligatorio.');
     if (!titulo) errores.push('El campo "Título" es obligatorio.');
     if (!descripcion) errores.push('El campo "Descripción" es obligatorio.');
@@ -107,7 +153,6 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
 
-    // Enviar evento al servidor
     fetch('/eventos/crear/', {
       method: 'POST',
       headers: {
@@ -128,13 +173,15 @@ document.addEventListener('DOMContentLoaded', function () {
           Swal.fire({
             icon: 'success',
             title: '¡Evento creado!',
-            text: 'Tu evento ha sido guardado exitosamente.',
+            text: 'Tu evento ha sido guardado exitosamentee.',
             confirmButtonColor: '#198754'
+          }).then(() => {
+            const formModal = bootstrap.Modal.getInstance(document.getElementById('formModal'));
+            if (formModal) formModal.hide();
+            const calendarModal = bootstrap.Modal.getInstance(document.getElementById('calendarModal'));
+            if (calendarModal) calendarModal.hide();
+            document.getElementById('eventoForm').reset();
           });
-
-          const modal = bootstrap.Modal.getInstance(document.getElementById('formModal'));
-          modal.hide();
-          this.reset();
         } else {
           Swal.fire({
             icon: 'error',
