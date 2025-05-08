@@ -37,14 +37,14 @@
             <span class="username">👤 {{ user.username }}</span>
             <span class="streak">
                 {% if ya_cumplio %}
-                <img src="{% static 'principal/image/rachaActiva.png' %}" alt="Racha activa" class="rachaImage">
+                    <img id="rachaImagen" src="{% static 'principal/image/rachaActiva.png' %}" alt="Racha activa" class="rachaImage">
                 {% else %}
-                <img src="{% static 'principal/image/rachaInactiva.png' %}" alt="Racha inactiva" class="rachaImage">
+                    <img id="rachaImagen" src="{% static 'principal/image/rachaInactiva.png' %}" alt="Racha inactiva" class="rachaImage">
                 {% endif %}
                 <strong><span id="rachaTexto">{{ usuario.rachaDias }}</span></strong> día de racha
             </span>
-
         </div>
+
         <div class="logout">
             <form method="post" action="{% url 'logout' %}">
                 {% csrf_token %}

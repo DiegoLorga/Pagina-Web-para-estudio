@@ -141,18 +141,29 @@ document.addEventListener('DOMContentLoaded', () => {
                     })
                     .then(response => response.json())
                     .then(data => {
+                        console.log("Respuesta del servidor:", data);
+    
                         if (data.ok) {
-                            console.log(' Racha de prueba actualizada:', data.racha);
-    
-                            //  Cambiar imagen a racha activa
+                            // ✅ Cambiar imagen a racha activa
                             const img = document.getElementById('rachaImagen');
-                            img.src = "/static/principal/image/rachaActiva.png";
+                            if (img) {
+                                img.src = "/static/principal/image/rachaActiva.png";
+                                console.log("✅ Imagen cambiada a racha activa");
+                            } else {
+                                console.warn("⚠️ No se encontró el elemento con id='rachaImagen'");
+                            }
     
-                            //  Actualizar número de días de racha
+                            // ✅ Actualizar número de días de racha
                             const rachaTexto = document.getElementById('rachaTexto');
-                            rachaTexto.textContent = data.racha;
+                            if (rachaTexto) {
+                                console.log(" Texto de racha actualizado:", data.racha);
+                                rachaTexto.textContent = data.racha;
+                                console.log(" Texto de racha actualizado:", data.racha);
+                            } else {
+                                console.warn(" No se encontró el elemento con id='rachaTexto'");
+                            }
                         } else {
-                            console.warn(' Error al aumentar la racha:', data.error);
+                            console.warn(' Error al aumentar la racha (fetch ok):', data.error);
                         }
                     })
                     .catch(error => {
@@ -177,6 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
             time--;
         }
     }
+    
     
     
     function getCSRFToken() {

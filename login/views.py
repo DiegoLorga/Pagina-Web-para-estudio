@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import make_password, check_password
 from .models import Estudiante
+from django.utils import timezone
 
 def login_view(request):
 
@@ -42,6 +43,16 @@ def login_estudiante(request):
         try:
             estudiante = Estudiante.objects.get(correo=correo)
             if check_password(password, estudiante.password):
+                # ✅ Verificar racha 
+                hoy = timezone.now().date()
+                ayer = hoy - timezone.timedelta(days=1)
+
+                if estudiante.ultima_actividad:
+                    if estudiante.ultima_actividad < ayer and estudiante.rachaDias > 0:
+                        estudiante.rachaDias = 0
+                        estudiante.save()
+                        context['racha_reiniciada'] = True  # puedes usar esto en la plantilla
+
                 request.session['usuario_id'] = estudiante.id
                 return redirect('menu_principal')  #  vista de menú
             else:

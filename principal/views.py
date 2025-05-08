@@ -24,6 +24,7 @@ def menu_principal(request):
         'ya_cumplio': ya_cumplio  
     })
 
+
 def aumentar_racha(request):
     if request.method == "POST":
         usuario_id = request.session.get('usuario_id')
@@ -36,14 +37,14 @@ def aumentar_racha(request):
             return JsonResponse({'ok': False, 'error': 'Usuario no encontrado'}, status=404)
 
         hoy = timezone.now().date()
-
-        if estudiante.ultima_actividad != hoy:
-            if estudiante.ultima_actividad == hoy - timezone.timedelta(days=1):
-                estudiante.rachaDias += 1
-            else:
-                estudiante.rachaDias = 1
-
-            estudiante.ultima_actividad = hoy
-            estudiante.save()
+        ayer = hoy - timezone.timedelta(days=1)
+        # ✅ Manejar todos los casos
+        if estudiante.ultima_actividad is None:
+            estudiante.rachaDias = 1
+        elif estudiante.ultima_actividad == ayer:
+            estudiante.rachaDias += 1
+           
+        estudiante.ultima_actividad = hoy
+        estudiante.save()
 
         return JsonResponse({'ok': True, 'racha': estudiante.rachaDias})
