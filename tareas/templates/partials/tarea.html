@@ -1,0 +1,17 @@
+<div class="task roundBorder" style="background-color:
+{% if tarea.estado == 1 %}#ABC252
+{% elif tarea.estado == 0 %}#dc3545
+{% elif tarea.estado == 2 %}#ffc107
+{% else %}#6c757d
+{% endif %};">
+  <div class="taskContent">
+    <span>{{ tarea.titulo }}</span>
+    <select name="estado" class="taskState roundBorder" data-id="{{ tarea.id }}"
+            onchange="actualizarEstado(this)">
+        <option value="0" {% if tarea.estado == 0 %}selected{% endif %}>Incompleta</option>
+        <option value="1" {% if tarea.estado == 1 %}selected{% endif %}>Completa</option>
+        <option value="2" {% if tarea.estado == 2 %}selected{% endif %}>En proceso</option>
+        <option value="3" {% if tarea.estado == 3 %}selected{% endif %}>Cancelada</option>
+    </select>
+  </div>
+</div>

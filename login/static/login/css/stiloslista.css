@@ -132,3 +132,18 @@ input:focus {
 .taskState:focus {
     outline: none;
 }
+
+.tareas {
+    height: 400px; /* Puedes ajustar este valor según lo que necesites */
+    overflow-y: auto; /* Agrega scroll si hay más tareas */
+    border: 1px solid #ccc;
+    padding: 1rem;
+    box-sizing: border-box;
+  }
+
+  .tasks-list {
+    max-height: 250px; /* Altura máxima para la lista de tareas */
+    overflow-y: auto;  /* Scroll solo para la lista */
+    margin-top: 1rem;
+  }
+  

@@ -4,14 +4,13 @@ from django.http import JsonResponse
 from django.utils import timezone
 from PyPDF2 import PdfReader
 from langchain_community.llms import Ollama
-
+from tareas.models import Tarea
 llm = Ollama(model="llama3")
 
 def menu_principal(request):
     usuario_id = request.session.get('usuario_id')
     if not usuario_id:
         return redirect('login')
-
     try:
         usuario = Estudiante.objects.get(id=usuario_id)
     except Estudiante.DoesNotExist:
@@ -90,3 +89,10 @@ def procesar_pdf(request):
             return JsonResponse({"error": f"Ocurrió un error al procesar el archivo: {str(e)}"}, status=500)
 
     return JsonResponse({"error": "Solicitud inválida."}, status=400)
+    # Obtener las tareas del usuario
+    tareas = Tarea.objects.filter(usuarioid_id=usuario_id).order_by('-fecha_creacion')
+
+    return render(request, 'menu_principal.html', {
+        'usuario_id': usuario_id,
+        'tareas': tareas
+    })

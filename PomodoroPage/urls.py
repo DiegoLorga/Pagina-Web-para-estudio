@@ -26,6 +26,8 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),  # Cierre de sesión
     path('temporizador/', include('temporizador.urls')),    # Temporizador si quieres accederlo directo
     path('eventos/', include('eventosAgenda.urls')),        # API de eventos (crear, editar, eliminar eventos)
+    path('tareas/', include('tareas.urls')),
+
 
     # Página principal
     path('', include('principal.urls')),  #  El menú principal (pomodoro + calendario + tareas + música)
