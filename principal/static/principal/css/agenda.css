@@ -72,12 +72,6 @@
     color: #fff;
   }
   
-  /* Eventos del calendario */
-  .fc .fc-event {
-    background-color: #198754 !important;
-    border-color: #157347 !important;
-    color: white !important;
-  }
   
   /* Texto azul de los días (domingo, lunes, etc.) */
   .fc .fc-col-header-cell-cushion {
