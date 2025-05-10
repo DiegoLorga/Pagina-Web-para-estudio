@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'tareas',
     'temporizador',
     'django_extensions',
+    'musica',
+
 ]
 
 MIDDLEWARE = [
