@@ -31,6 +31,7 @@
 
 </head>
 
+<script src="{% static 'musica/js/musica.js' %}"></script>
 <body>
 
     <div class="navar">
@@ -113,8 +114,21 @@
 
         <!-- Tarjeta Música -->
         <div class="musica">
-            <div class="titulo">Música</div>
+    <div class="titulo">Música</div>
+    <div class="reproductor-musica">
+        <h5 id="nombreCancion">Música instrumental</h5>
+        <audio id="audio" controls>
+            <source id="audioSource" src="{% static 'musica/canciones/Música instrumental.mp3' %}" type="audio/mpeg">
+            Tu navegador no soporta el elemento de audio.
+        </audio>
+        <div class="botones-musica">
+            <button id="anteriorBtn"><i class="fas fa-backward"></i></button>
+            <button id="reproducirBtn"><i class="fas fa-play"></i></button>
+            <button id="siguienteBtn"><i class="fas fa-forward"></i></button>
         </div>
+    </div>
+</div>
+
 
     </div>
 
