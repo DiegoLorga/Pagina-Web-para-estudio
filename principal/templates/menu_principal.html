@@ -32,6 +32,7 @@
 </head>
 
 <script src="{% static 'musica/js/musica.js' %}"></script>
+
 <body>
 
     <div class="navar">
@@ -114,20 +115,21 @@
 
         <!-- Tarjeta Música -->
         <div class="musica">
-    <div class="titulo">Música</div>
-    <div class="reproductor-musica">
-        <h5 id="nombreCancion">Música instrumental</h5>
-        <audio id="audio" controls>
-            <source id="audioSource" src="{% static 'musica/canciones/Música instrumental.mp3' %}" type="audio/mpeg">
-            Tu navegador no soporta el elemento de audio.
-        </audio>
-        <div class="botones-musica">
-            <button id="anteriorBtn"><i class="fas fa-backward"></i></button>
-            <button id="reproducirBtn"><i class="fas fa-play"></i></button>
-            <button id="siguienteBtn"><i class="fas fa-forward"></i></button>
+            <div class="titulo">Música</div>
+            <div class="reproductor-musica">
+                <h5 id="nombreCancion">Música instrumental</h5>
+                <audio id="audio" controls>
+                    <source id="audioSource" src="{% static 'musica/canciones/Música instrumental.mp3' %}"
+                        type="audio/mpeg">
+                    Tu navegador no soporta el elemento de audio.
+                </audio>
+                <div class="botones-musica">
+                    <button id="anteriorBtn"><i class="fas fa-backward"></i></button>
+                    <button id="reproducirBtn"><i class="fas fa-play"></i></button>
+                    <button id="siguienteBtn"><i class="fas fa-forward"></i></button>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
 
 
     </div>
@@ -287,7 +289,7 @@
                 <div id="quiz-final" class="text-center mt-4" style="display: none;"></div>
 
                 <div class="text-center mt-3">
-                    <button class="btn btn-link" data-bs-dismiss="modal">Cerrar</button>
+                    <button class="btn btn-link" id="cerrarQuizBtn">Cerrar</button>
                 </div>
             </div>
         </div>
@@ -387,12 +389,20 @@
             document.getElementById('quiz-progreso').innerText = '';
         });
 
-        // Limpiar PDF y resultado cuando se cierra el modal
-        const llamaModal = document.getElementById('llamaModal');
-        llamaModal.addEventListener('hidden.bs.modal', () => {
-            document.getElementById('pdfFile').value = '';
-            document.getElementById('resultado-llama').innerHTML = '';
-            document.getElementById('spinner').style.display = 'none';
+        // Cierre completo y limpio al presionar "Cerrar"
+        document.getElementById('cerrarQuizBtn').addEventListener('click', () => {
+            const modal = bootstrap.Modal.getInstance(quizModal);
+            if (modal) modal.hide(); // Asegura cierre completo
+
+            // También forzamos limpieza de backdrop si algo falla
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) backdrop.remove();
+
+            document.body.classList.remove('modal-open');
+            document.body.style = '';
+
+            // Opcional: enfocar o mover scroll al contenedor principal
+            // document.querySelector('.contenedor-principal').scrollIntoView({ behavior: 'smooth' });
         });
     </script>
 
@@ -501,7 +511,22 @@
                 });
         }
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('[data-bs-dismiss="modal"], .btn[data-bs-dismiss="modal"]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Esperamos un momento para que Bootstrap cierre el modal
+                    setTimeout(() => {
+                        const backdrop = document.querySelector('.modal-backdrop');
+                        if (backdrop) backdrop.remove();
 
+                        document.body.classList.remove('modal-open');
+                        document.body.style = '';
+                    }, 300); // Tiempo suficiente para que se cierre el modal
+                });
+            });
+        });
+    </script>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
