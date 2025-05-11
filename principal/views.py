@@ -38,7 +38,7 @@ def aumentar_racha(request):
 
         hoy = timezone.now().date()
         ayer = hoy - timezone.timedelta(days=1)
-        # ✅ Manejar todos los casos
+        #Manejar todos los casos
         if estudiante.ultima_actividad is None:
             estudiante.rachaDias = 1
         elif estudiante.ultima_actividad == ayer:

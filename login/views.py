@@ -33,7 +33,7 @@ def registro_estudiante(request):
                 # 🚀 Loguear automáticamente al usuario
                 request.session['usuario_id'] = estudiante.id
                 request.session['usuario_nombre'] = estudiante.nombre
-                return redirect('')
+                return redirect('menu_principal')
     return render(request, 'login.html')
 
 def login_estudiante(request):

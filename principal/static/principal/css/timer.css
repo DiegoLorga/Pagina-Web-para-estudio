@@ -135,12 +135,15 @@ body {
 }
 
 .modal-content {
-    background-color: #fff;
+    background-color: #d8e8b3; /* o el color que uses */
     padding: 20px;
-    border-radius: 10px;
+    border-radius: 15px;
+    max-width: 600px;
+    margin: auto;
     text-align: center;
-    min-width: 300px;
+    box-sizing: border-box;
 }
+
 
 /* Siguiente sesión Pomodoro */
 #nextSession {
