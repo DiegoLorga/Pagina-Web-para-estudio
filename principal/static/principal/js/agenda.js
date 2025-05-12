@@ -1,6 +1,7 @@
-
+// Obtiene el token CSRF desde el meta tag del HTML
 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
+// Función para obtener una cookie por nombre (útil para CSRF si no se usa meta tag)
 function getCookie(name) {
   let cookieValue = null;
   if (document.cookie && document.cookie !== '') {
@@ -16,16 +17,18 @@ function getCookie(name) {
   return cookieValue;
 }
 
+// Espera a que el DOM esté cargado
 document.addEventListener('DOMContentLoaded', function () {
-  let calendar;
+  let calendar; // Variable para almacenar la instancia del calendario
 
+  // Inicializa el calendario con FullCalendar
   const initCalendar = () => {
     const calendarEl = document.getElementById('calendar');
   
     calendar = new FullCalendar.Calendar(calendarEl, {
-      locale: 'es',
-      initialView: 'dayGridMonth',
-      allDayText: 'Eventos',
+      locale: 'es', // Idioma en español
+      initialView: 'dayGridMonth', // Vista inicial
+      allDayText: 'Eventos', // Texto para eventos de todo el día
       height: '700px',
       allDaySlot: true,
       slotMinTime: "00:00:00",
@@ -41,6 +44,7 @@ document.addEventListener('DOMContentLoaded', function () {
         week: 'Semana',
         day: 'Día'
       },
+      // Botón personalizado para agregar un evento
       customButtons: {
         agregarEventoBtn: {
           text: '+ Agregar evento',
@@ -51,6 +55,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
       },
     
+      // Renderizado personalizado del contenido del evento
       eventContent: function(arg) {
         const viewType = arg.view.type;
         if (viewType === 'timeGridWeek' || viewType === 'timeGridDay') {
@@ -82,54 +87,53 @@ document.addEventListener('DOMContentLoaded', function () {
   </div>
 `;
 
-      
           return { domNodes: [contenedor] };
         }
         return true;
       }
-      
     });
-    
-    
   
-    calendar.render();
+    calendar.render(); // Renderiza el calendario en el DOM
   };
   
-
+  // Evento que se dispara cuando se abre el modal del calendario
   const calendarModal = document.getElementById('calendarModal');
   calendarModal.addEventListener('shown.bs.modal', function () {
     if (!calendar) {
-      initCalendar();
+      initCalendar(); // Inicializa si aún no existe
     }
 
+    // Elimina cualquier fuente de eventos existente
     if (calendar.getEventSources().length > 0) {
       calendar.getEventSources().forEach(source => source.remove());
     }
 
+    // Solicita los eventos del usuario al backend
     fetch('/eventos/usuario/')
-  .then(res => res.json())
-  .then(data => {
-    const eventosFormateados = data.map(evt => ({
-      title: evt.titulo,
-      start: evt.fecha_evento,
-      allDay: true,
-      backgroundColor: evt.importante ? '#ABC252' : '#d3d3d3',
-      borderColor: evt.importante ? '#ABC252' : '#d3d3d3',
-      textColor: '#000',
-      descripcion: evt.descripcion,
-      importante: evt.importante
-    }));
-    calendar.addEventSource(eventosFormateados);
-  })
-
+      .then(res => res.json())
+      .then(data => {
+        const eventosFormateados = data.map(evt => ({
+          title: evt.titulo,
+          start: evt.fecha_evento,
+          allDay: true,
+          backgroundColor: evt.importante ? '#ABC252' : '#d3d3d3',
+          borderColor: evt.importante ? '#ABC252' : '#d3d3d3',
+          textColor: '#000',
+          descripcion: evt.descripcion,
+          importante: evt.importante
+        }));
+        calendar.addEventSource(eventosFormateados); // Agrega los eventos al calendario
+      })
       .catch(err => {
-        console.error("🔴 Error al obtener eventos del usuario:", err);
+        console.error("Error al obtener eventos del usuario:", err);
       });
   });
 
+  // Maneja el envío del formulario para crear un evento
   document.getElementById('eventoForm').addEventListener('submit', function (e) {
-    e.preventDefault();
+    e.preventDefault(); // Evita recarga de la página
 
+    // Obtiene los valores del formulario
     const usuarioid = usuarioId;
     const titulo = document.getElementById('titulo').value.trim();
     const descripcion = document.getElementById('descripcion').value.trim();
@@ -138,6 +142,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let errores = [];
 
+    // Validaciones básicas
     if (!usuarioid) errores.push('El campo "Usuario ID" es obligatorio.');
     if (!titulo) errores.push('El campo "Título" es obligatorio.');
     if (!descripcion) errores.push('El campo "Descripción" es obligatorio.');
@@ -153,6 +158,7 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
 
+    // Envío de datos al backend
     fetch('/eventos/crear/', {
       method: 'POST',
       headers: {
@@ -170,6 +176,7 @@ document.addEventListener('DOMContentLoaded', function () {
       .then(res => res.json())
       .then(data => {
         if (data.id) {
+          // Éxito al guardar el evento
           Swal.fire({
             icon: 'success',
             title: '¡Evento creado!',
@@ -177,12 +184,13 @@ document.addEventListener('DOMContentLoaded', function () {
             confirmButtonColor: '#198754'
           }).then(() => {
             const formModal = bootstrap.Modal.getInstance(document.getElementById('formModal'));
-            if (formModal) formModal.hide();
+            if (formModal) formModal.hide(); // Cierra el modal del formulario
             const calendarModal = bootstrap.Modal.getInstance(document.getElementById('calendarModal'));
-            if (calendarModal) calendarModal.hide();
-            document.getElementById('eventoForm').reset();
+            if (calendarModal) calendarModal.hide(); // Cierra el modal del calendario
+            document.getElementById('eventoForm').reset(); // Limpia el formulario
           });
         } else {
+          // Error devuelto por el servidor
           Swal.fire({
             icon: 'error',
             title: 'Error',
@@ -192,6 +200,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
       })
       .catch(err => {
+        // Error de red o conexión
         console.error(err);
         Swal.fire({
           icon: 'error',

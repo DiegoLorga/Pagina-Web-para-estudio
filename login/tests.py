@@ -1,75 +1,71 @@
-import pytest
+from django.test import TestCase, Client
 from django.urls import reverse
 from login.models import Estudiante
-from django.contrib.auth.hashers import check_password
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, check_password
 
+# Pruebas para el modelo Estudiante y el flujo de autenticación
+class EstudianteTests(TestCase):
+    def setUp(self):
+        # Se inicializa el cliente de pruebas
+        self.client = Client()
 
-@pytest.mark.django_db
-def test_registro_estudiante(client):
-    url = reverse('registrar_estudiante')
-    response = client.post(url, {
-        'nombre': 'Test User',
-        'correo': 'test@example.com',
-        'password': 'testpassword123'
-    })
-    
-    # Asegura que fue un redirect (registro exitoso redirige)
-    assert response.status_code == 302
-    
-    # Verifica que el estudiante fue creado
-    estudiante = Estudiante.objects.get(correo='test@example.com')
-    assert estudiante.nombre == 'Test User'
-    assert check_password('testpassword123', estudiante.password)  # La contraseña fue hasheada y funciona
+    def test_registro_estudiante(self):
+        # Prueba que se pueda registrar un nuevo estudiante
+        url = reverse('registrar_estudiante')  # URL de la vista de registro
+        response = self.client.post(url, {
+            'nombre': 'Test User',
+            'correo': 'test@example.com',
+            'password': 'testpassword123'
+        })
 
-@pytest.mark.django_db
-def test_login_estudiante_correcto(client):
-    # Primero, crea un estudiante manualmente
-    estudiante = Estudiante.objects.create(
-        nombre='Login User',
-        correo='login@example.com',
-        password=make_password('securepassword123'),
-        rachaDias=0
-    )
-    
-    url = reverse('login_estudiante')
-    response = client.post(url, {
-        'correo': 'login@example.com',
-        'password': 'securepassword123'
-    })
-    
-    # Debe redirigir al 'lista_view'
-    assert response.status_code == 302
-    assert response.url == reverse('lista_view')
+        self.assertEqual(response.status_code, 302)  # Se espera redirección tras registro exitoso
+        estudiante = Estudiante.objects.get(correo='test@example.com')  # Se obtiene el estudiante creado
+        self.assertEqual(estudiante.nombre, 'Test User')  # Se valida el nombre
+        self.assertTrue(check_password('testpassword123', estudiante.password))  # Se comprueba el hash de la contraseña
 
-@pytest.mark.django_db
-def test_login_estudiante_contraseña_incorrecta(client):
-    # Crea un estudiante
-    estudiante = Estudiante.objects.create(
-        nombre='Bad Login User',
-        correo='badlogin@example.com',
-        password=make_password('rightpassword'),
-        rachaDias=0
-    )
-    
-    url = reverse('login_estudiante')
-    response = client.post(url, {
-        'correo': 'badlogin@example.com',
-        'password': 'wrongpassword'  # contraseña incorrecta
-    })
+    def test_login_estudiante_correcto(self):
+        # Se crea un estudiante con contraseña hasheada
+        Estudiante.objects.create(
+            nombre='Login User',
+            correo='login@example.com',
+            password=make_password('securepassword123'),
+            rachaDias=0
+        )
 
-    # Debe quedarse en el login, mostrando error (no redirige)
-    assert response.status_code == 200
-    assert b'Error al iniciar sesi' in response.content  # Buscamos parte del mensaje de error
+        url = reverse('login_estudiante')  # URL de la vista de login
+        response = self.client.post(url, {
+            'correo': 'login@example.com',
+            'password': 'securepassword123'
+        })
 
-@pytest.mark.django_db
-def test_login_estudiante_usuario_no_existente(client):
-    url = reverse('login_estudiante')
-    response = client.post(url, {
-        'correo': 'nonexistent@example.com',
-        'password': 'whatever'
-    })
+        self.assertEqual(response.status_code, 302)  # Se espera redirección tras login exitoso
+        self.assertEqual(response.url, reverse('menu_principal'))  # Se verifica que redirige al menú principal
 
-    # Igual, no debe redirigir, debe mostrar error
-    assert response.status_code == 200
-    assert b'no tiene una cuenta registrada' in response.content
+    def test_login_estudiante_contraseña_incorrecta(self):
+        # Se crea un estudiante válido
+        Estudiante.objects.create(
+            nombre='Bad Login User',
+            correo='badlogin@example.com',
+            password=make_password('rightpassword'),
+            rachaDias=0
+        )
+
+        url = reverse('login_estudiante')  # URL de la vista de login
+        response = self.client.post(url, {
+            'correo': 'badlogin@example.com',
+            'password': 'wrongpassword'  # Contraseña incorrecta
+        })
+
+        self.assertEqual(response.status_code, 200)  # La vista responde con recarga (sin redirección)
+        self.assertContains(response, 'Contraseña incorrecta')  # Se espera mensaje de error
+
+    def test_login_estudiante_usuario_no_existente(self):
+        # Se intenta iniciar sesión con un correo no registrado
+        url = reverse('login_estudiante')
+        response = self.client.post(url, {
+            'correo': 'nonexistent@example.com',
+            'password': 'whatever'
+        })
+
+        self.assertEqual(response.status_code, 200)  # La vista responde sin redirección
+        self.assertContains(response, 'no tiene una cuenta registrada')  # Mensaje esperado en respuesta

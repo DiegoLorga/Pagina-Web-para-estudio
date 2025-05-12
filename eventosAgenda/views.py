@@ -15,12 +15,12 @@ def agenda_view(request):
     return render(request, 'eventosAgenda/agenda.html', {'usuario_id': usuario_id})
 
 
-# 🔹 Obtener eventos a partir de una fecha
+# Obtener eventos a partir de una fecha
 def obtener_eventos_desde_fecha(request, fecha):
     eventos = Agenda.objects.filter(fecha_evento__gte=fecha).values()
     return JsonResponse(list(eventos), safe=False)
 
-# 🔹 Crear un nuevo evento
+# Crear un nuevo evento
 @csrf_exempt
 def crear_evento(request):
     
@@ -41,7 +41,7 @@ def crear_evento(request):
             return JsonResponse({'error': str(e)}, status=400)
     return JsonResponse({'error': 'Método no permitido'}, status=405)
 
-# 🔹 Eliminar evento por ID
+# Eliminar evento por ID
 @csrf_exempt
 def eliminar_evento(request, evento_id):
     if request.method == 'DELETE':
@@ -53,7 +53,7 @@ def eliminar_evento(request, evento_id):
             return JsonResponse({'error': 'Evento no encontrado'}, status=404)
     return JsonResponse({'error': 'Método no permitido'}, status=405)
 
-# 🔹 Editar un evento
+# Editar un evento
 @csrf_exempt
 def editar_evento(request, evento_id):
     if request.method == 'PUT':

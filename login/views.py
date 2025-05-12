@@ -30,7 +30,7 @@ def registro_estudiante(request):
                     password=make_password(password),
                     rachaDias=0
                 )
-                # 🚀 Loguear automáticamente al usuario
+                # Loguear automáticamente al usuario
                 request.session['usuario_id'] = estudiante.id
                 request.session['usuario_nombre'] = estudiante.nombre
                 return redirect('menu_principal')
@@ -46,7 +46,7 @@ def login_estudiante(request):
         try:
             estudiante = Estudiante.objects.get(correo=correo)
             if check_password(password, estudiante.password):
-                # ✅ Verificar racha 
+                # Verificar racha 
                 hoy = timezone.now().date()
                 ayer = hoy - timezone.timedelta(days=1)
 
